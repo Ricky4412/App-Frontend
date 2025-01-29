@@ -1,4 +1,3 @@
-// authService.ts
 import api from './api';
 
 export const sendOtp = async (email: string): Promise<any> => {
