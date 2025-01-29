@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.ts",
   "license": "0BSD",
-  "homepage": "https://Ricky4412.github.io/Jem_Frontend",
+  "homepage": "https://ricky4412.github.io/Jem_Frontend/",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider webpack",
     "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider node server.js",
