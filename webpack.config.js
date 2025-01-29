@@ -1,11 +1,14 @@
 const createExpoWebpackConfigAsync = require('@expo/webpack-config');
 
-module.exports = async function (env, argv) {
+module.exports = async (env, argv) => {
+  // Validate the mode (development or production)
+  env.mode = env.mode || 'development';
+
+  // Create the default config
   const config = await createExpoWebpackConfigAsync(env, argv);
 
-  // Custom modifications to the Webpack config (optional)
-  // Example: Uncomment to set up aliases or plugins
-  // config.resolve.alias['my-alias'] = '/my/custom/path';
+  // Customize the config before returning it
+  // For example, add custom plugins, loaders, etc.
 
   return config;
 };
