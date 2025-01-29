@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-native';
 
-const socket = io('http://localhost:5000'); // Replace with your server address
+const socket = io('https://n-app.onrender.com'); // Replace with your server address
 
 const Chat: React.FC = () => {
   const [message, setMessage] = useState<string>('');

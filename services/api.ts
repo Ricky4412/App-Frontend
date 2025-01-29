@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define the API base URL
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://n-app.onrender.com';
+const API_BASE_URL = 'https://n-app.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
