@@ -32,6 +32,11 @@ const ReadingScreen: React.FC = () => {
 
         const proxyServerUrl = process.env.PROXY_SERVER_URL || 'https://proxy-server-puce-alpha.vercel.app';
         const response = await fetch(`${proxyServerUrl}/proxy?url=${encodeURIComponent(contentUrl)}`);
+        
+        // Log the response status and headers
+        console.log(`Response Status: ${response.status}`);
+        console.log(`Response Headers: ${JSON.stringify(response.headers)}`);
+        
         const htmlText = await response.text();
         console.log(`HTML content loaded: ${htmlText.length} characters`);
 
