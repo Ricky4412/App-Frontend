@@ -1,9 +1,9 @@
 import api from './api';
 
 // Function to get all books
-export const getBooks = async (): Promise<any[]> => {
+export const getBooks = async (params?: { search?: string; author?: string; rating?: string }): Promise<any[]> => {
   try {
-    const response = await api.get('/books');
+    const response = await api.get('/api/books', { params });
     return response.data;
   } catch (error) {
     console.error('Error fetching books:', error);
