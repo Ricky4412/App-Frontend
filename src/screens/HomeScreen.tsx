@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Greetings from '../components/Greetings';
 import BookCard from '../components/BookCard';
 import { getBooks } from '../../services/bookService';
-import { getUserProfile } from '../../services/profileService';
+import { getUserProfile } from '../../services/userService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import SearchBar from '../components/SearchBar';
 
@@ -56,13 +56,13 @@ const HomeScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Greetings username={username} usernameStyle={styles.usernameStyle} />
+        <Greetings username={username} />
         <SearchBar placeholder="Search books..." onSearch={setSearch} />
         <Text style={styles.heading}>Explore the Good News</Text>
       </View>
       <FlatList
         data={books}
-        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        keyExtractor={(item) => item._id.toString()}
         renderItem={renderBookCard}
         numColumns={2}
         columnWrapperStyle={styles.row}
@@ -98,10 +98,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
-  usernameStyle: {
-    color: 'tomato',
-    fontWeight: 'bold',
   },
 });
 
