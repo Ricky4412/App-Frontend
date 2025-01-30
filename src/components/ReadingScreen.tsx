@@ -28,9 +28,10 @@ const ReadingScreen: React.FC = () => {
         if (!contentUrl) {
           throw new Error('Invalid HTML URL.');
         }
-        
-        // Fetch the HTML content using a proxy server to handle CORS
-        const response = await fetch(`https://your-proxy-server.com/proxy?url=${encodeURIComponent(contentUrl)}`);
+
+        // Use the proxy server URL from environment variables
+        const proxyServerUrl = process.env.PROXY_SERVER_URL || 'http://localhost:3000';
+        const response = await fetch(`${proxyServerUrl}/proxy?url=${encodeURIComponent(contentUrl)}`);
         const htmlText = await response.text();
         console.log(`HTML content loaded: ${htmlText.length} characters`);
 
