@@ -30,8 +30,12 @@ const ReadingScreen: React.FC = () => {
         }
 
         // Use the proxy server URL to fetch the content
-        const proxyServerUrl = 'https://proxy-server-puce-alpha.vercel.app';
+        const proxyServerUrl = 'https://proxy-server-puce-alpha.vercel.app/proxy'; // Correct path
         const response = await fetch(`${proxyServerUrl}?url=${encodeURIComponent(contentUrl)}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch content: ${response.statusText}`);
+        }
+
         const htmlText = await response.text();
         console.log(`HTML content loaded: ${htmlText.length} characters`);
 
