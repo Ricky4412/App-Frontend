@@ -5,7 +5,7 @@ import {
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import Slider from '@react-native-community/slider'; // Updated import
+import Slider from '@react-native-community/slider';
 
 type ReadingScreenRouteProp = RouteProp<{ params: { contentUrl: string } }, 'params'>;
 
