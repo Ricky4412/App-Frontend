@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, Dimensions, ActivityIndicator, Button, TouchableOpacity,
+  View, Text, StyleSheet, Dimensions, ActivityIndicator, Button, TouchableOpacity, Platform
 } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
@@ -29,7 +29,6 @@ const ReadingScreen: React.FC = () => {
           throw new Error('Invalid HTML URL.');
         }
 
-        // Use the proxy server URL to fetch the content
         const proxyServerUrl = 'https://proxy-server-puce-alpha.vercel.app/proxy';
         const response = await fetch(`${proxyServerUrl}?url=${encodeURIComponent(contentUrl)}`);
         if (!response.ok) {
@@ -115,6 +114,33 @@ const ReadingScreen: React.FC = () => {
     );
   }
 
+  const renderContent = () => {
+    if (Platform.OS === 'web') {
+      return (
+        <iframe
+          srcDoc={htmlContent}
+          style={styles.webview}
+          onLoad={() => setProgress(1)}
+        />
+      );
+    } else {
+      return (
+        <WebView
+          originWhitelist={['*']}
+          source={{ html: htmlContent }}
+          style={styles.webview}
+          onError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent;
+            console.error('WebView error: ', nativeEvent);
+            setError('An error occurred while displaying the content.');
+          }}
+          onLoadProgress={({ nativeEvent }) => setProgress(nativeEvent.progress)}
+          scalesPageToFit={false}
+        />
+      );
+    }
+  };
+
   return (
     <View style={[styles.container, darkMode && styles.darkContainer]}>
       <View style={styles.header}>
@@ -126,18 +152,7 @@ const ReadingScreen: React.FC = () => {
           <MaterialIcons name={darkMode ? "brightness-7" : "brightness-2"} size={24} color={darkMode ? "#fff" : "#000"} />
         </TouchableOpacity>
       </View>
-      <WebView
-        originWhitelist={['*']}
-        source={{ html: htmlContent }}
-        style={styles.webview}
-        onError={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent;
-          console.error('WebView error: ', nativeEvent);
-          setError('An error occurred while displaying the content.');
-        }}
-        onLoadProgress={({ nativeEvent }) => setProgress(nativeEvent.progress)}
-        scalesPageToFit={false}
-      />
+      {renderContent()}
       <View style={styles.progressBarContainer}>
         <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
       </View>
