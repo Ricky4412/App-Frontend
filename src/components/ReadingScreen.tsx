@@ -29,11 +29,9 @@ const ReadingScreen: React.FC = () => {
           throw new Error('Invalid HTML URL.');
         }
 
-        const response = await fetch(contentUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch content: ${response.statusText}`);
-        }
-
+        // Use the proxy server URL to fetch the content
+        const proxyServerUrl = 'https://proxy-server-puce-alpha.vercel.app';
+        const response = await fetch(`${proxyServerUrl}?url=${encodeURIComponent(contentUrl)}`);
         const htmlText = await response.text();
         console.log(`HTML content loaded: ${htmlText.length} characters`);
 
