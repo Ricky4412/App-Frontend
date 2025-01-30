@@ -99,13 +99,15 @@ export const addReview = async (bookId: string, rating: number, comment: string)
   }
 };
 
+
 // Function to get reviews for a specific book
 export const getReviews = async (bookId: string): Promise<any[]> => {
   try {
-    const response = await api.get(`/reviews/${bookId}`);
+    const response = await api.get(`/api/reviews/${bookId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching reviews for book ID ${bookId}:`, error);
     throw new Error('Failed to fetch reviews. Please try again later.');
   }
 };
+
