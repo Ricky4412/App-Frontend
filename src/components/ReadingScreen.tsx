@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, Dimensions, ActivityIndicator, Button, TouchableOpacity,
 } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import Slider from '@react-native-community/slider';
+import Slider from '@react-native-community/slider'; // Updated import
 
 type ReadingScreenRouteProp = RouteProp<{ params: { contentUrl: string } }, 'params'>;
 
@@ -20,7 +20,6 @@ const ReadingScreen: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [zoom, setZoom] = useState<number>(1);
-  const webViewRef = useRef(null);
 
   useEffect(() => {
     const loadHtmlContent = async () => {
@@ -30,13 +29,7 @@ const ReadingScreen: React.FC = () => {
           throw new Error('Invalid HTML URL.');
         }
 
-        const proxyServerUrl = process.env.PROXY_SERVER_URL || 'https://proxy-server-puce-alpha.vercel.app';
-        const response = await fetch(`${proxyServerUrl}/proxy?url=${encodeURIComponent(contentUrl)}`);
-        
-        // Log the response status and headers
-        console.log(`Response Status: ${response.status}`);
-        console.log(`Response Headers: ${JSON.stringify(response.headers)}`);
-        
+        const response = await fetch(contentUrl);
         const htmlText = await response.text();
         console.log(`HTML content loaded: ${htmlText.length} characters`);
 
@@ -128,7 +121,6 @@ const ReadingScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       <WebView
-        ref={webViewRef}
         originWhitelist={['*']}
         source={{ html: htmlContent }}
         style={styles.webview}
