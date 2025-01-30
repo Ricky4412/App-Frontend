@@ -5,7 +5,7 @@ import {
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import Slider from '@react-native-community/slider'; // Updated import
+import Slider from '@react-native-community/slider';
 
 type ReadingScreenRouteProp = RouteProp<{ params: { contentUrl: string } }, 'params'>;
 
@@ -30,6 +30,10 @@ const ReadingScreen: React.FC = () => {
         }
 
         const response = await fetch(contentUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch content: ${response.statusText}`);
+        }
+
         const htmlText = await response.text();
         console.log(`HTML content loaded: ${htmlText.length} characters`);
 
