@@ -45,8 +45,6 @@ api.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           console.error('Unauthorized access - possibly invalid token');
-          // Optionally, redirect the user to the login screen or refresh the token
-          // e.g., window.location.href = '/login';
           break;
         case 404:
           console.error('Resource not found');
