@@ -29,8 +29,7 @@ const ReadingScreen: React.FC = () => {
           throw new Error('Invalid HTML URL.');
         }
 
-        // Use the proxy server URL from environment variables
-        const proxyServerUrl = process.env.PROXY_SERVER_URL || 'http://localhost:3000';
+        const proxyServerUrl = process.env.PROXY_SERVER_URL || 'https://proxy-server-puce-alpha.vercel.app';
         const response = await fetch(`${proxyServerUrl}/proxy?url=${encodeURIComponent(contentUrl)}`);
         const htmlText = await response.text();
         console.log(`HTML content loaded: ${htmlText.length} characters`);
