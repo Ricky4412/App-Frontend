@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, forwardRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, Dimensions, ActivityIndicator, Button, TouchableOpacity,
 } from 'react-native';
@@ -20,7 +20,6 @@ const ReadingScreen: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [zoom, setZoom] = useState<number>(1);
-  const webViewRef = useRef(null);
 
   useEffect(() => {
     const loadHtmlContent = async () => {
@@ -128,7 +127,6 @@ const ReadingScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       <WebView
-        ref={webViewRef}
         originWhitelist={['*']}
         source={{ html: htmlContent }}
         style={styles.webview}
