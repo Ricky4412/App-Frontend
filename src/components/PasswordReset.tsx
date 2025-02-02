@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import api from '../../services/api';
 
@@ -10,18 +10,23 @@ const PasswordReset: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const navigation = useNavigation();
   const route = useRoute<PasswordResetRouteProp>();
   const token = route.params?.token;
 
   const handleSendResetLink = async () => {
+    setLoading(true);
     try {
       await api.post('/auth/request-reset', { email });
       Alert.alert('Success', 'Reset link sent to your email');
       setStep(2);
+      setErrorMessage('');
     } catch (error: any) {
-      setErrorMessage('Failed to send reset link. Please try again.');
+      setErrorMessage(error.response?.data?.message || 'Failed to send reset link. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,12 +39,15 @@ const PasswordReset: React.FC = () => {
       setErrorMessage('Password must be at least 8 characters and include alphabets, numbers, and symbols.');
       return;
     }
+    setLoading(true);
     try {
       await api.post('/auth/reset-password', { token, password: newPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
-      setErrorMessage('Failed to update password. Please try again.');
+      setErrorMessage(error.response?.data?.message || 'Failed to update password. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,7 +69,11 @@ const PasswordReset: React.FC = () => {
             keyboardType="email-address"
           />
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-          <Button title="Send Reset Link" onPress={handleSendResetLink} />
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <Button title="Send Reset Link" onPress={handleSendResetLink} />
+          )}
         </>
       ) : (
         <>
@@ -80,7 +92,11 @@ const PasswordReset: React.FC = () => {
             secureTextEntry
           />
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-          <Button title="Update Password" onPress={handleUpdatePassword} />
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <Button title="Update Password" onPress={handleUpdatePassword} />
+          )}
         </>
       )}
     </View>
