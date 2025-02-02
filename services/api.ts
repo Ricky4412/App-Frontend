@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Define the API base URL
+// Define the API base URL for your deployed backend
 const API_BASE_URL = 'https://n-app.onrender.com';
 
 const api = axios.create({
