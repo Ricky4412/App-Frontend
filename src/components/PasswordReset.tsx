@@ -19,7 +19,7 @@ const PasswordReset: React.FC = () => {
   const handleSendResetLink = async () => {
     setLoading(true);
     try {
-      await api.post('/auth/request-reset', { email });
+      await api.post('/api/auth/request-reset', { email });
       Alert.alert('Success', 'Reset link sent to your email');
       setStep(2);
       setErrorMessage('');
@@ -41,7 +41,7 @@ const PasswordReset: React.FC = () => {
     }
     setLoading(true);
     try {
-      await api.post('/auth/reset-password', { token, password: newPassword });
+      await api.post('/api/auth/reset-password', { token, password: newPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
