@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -22,6 +21,7 @@ import Chat from '../components/Chat';
 import BookDetails from '../components/BookDetails'; // Import BookDetails component
 import ReadingScreen from '../components/ReadingScreen'; // Ensure ReadingScreen is imported
 import ReviewCard from "../components/ReviewCard";
+import PasswordReset from '../screens/PasswordReset'; // Import PasswordReset component
 
 // Define types for stack and tab navigators
 type RootStackParamList = {
@@ -33,6 +33,7 @@ type RootStackParamList = {
   BookDetails: { book: any }; // Add BookDetails route
   ReadingScreen: { contentUrl: string }; // Add ReadingScreen route
   ReviewCard: { bookId: string };
+  PasswordReset: undefined; // Add PasswordReset route
 };
 
 type TabParamList = {
@@ -130,6 +131,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="BookDetails" component={BookDetails} />
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
+        <Stack.Screen name="PasswordReset" component={PasswordReset} />
       </Stack.Navigator>
     </NavigationContainer>
   );
