@@ -18,10 +18,10 @@ import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import Chat from '../components/Chat';
-import BookDetails from '../components/BookDetails'; // Import BookDetails component
-import ReadingScreen from '../components/ReadingScreen'; // Ensure ReadingScreen is imported
+import BookDetails from '../components/BookDetails';
+import ReadingScreen from '../components/ReadingScreen';
 import ReviewCard from "../components/ReviewCard";
-import PasswordReset from '../screens/PasswordReset'; // Import PasswordReset component
+import PasswordReset from '../components/PasswordReset';
 
 // Define types for stack and tab navigators
 type RootStackParamList = {
@@ -30,10 +30,10 @@ type RootStackParamList = {
   OTPVerificationScreen: { userId: string; role: string };
   Admin: undefined;
   Main: undefined;
-  BookDetails: { book: any }; // Add BookDetails route
-  ReadingScreen: { contentUrl: string }; // Add ReadingScreen route
+  BookDetails: { book: any };
+  ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: undefined; // Add PasswordReset route
+  PasswordReset: { token?: string }; // Add PasswordReset route with optional token
 };
 
 type TabParamList = {
