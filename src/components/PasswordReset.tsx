@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { sendResetLink, updatePassword } from '../../services/authService';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import api from '../../services/api';
+
+type PasswordResetRouteProp = RouteProp<{ params: { token?: string } }, 'params'>;
 
 const PasswordReset: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [step, setStep] = useState(1);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [step, setStep] = useState(1);
   const navigation = useNavigation();
+  const route = useRoute<PasswordResetRouteProp>();
+  const token = route.params?.token;
 
   const handleSendResetLink = async () => {
     try {
-      await sendResetLink(email);
+      await api.post('/auth/request-reset', { email });
+      Alert.alert('Success', 'Reset link sent to your email');
       setStep(2);
     } catch (error: any) {
       setErrorMessage('Failed to send reset link. Please try again.');
@@ -30,7 +35,7 @@ const PasswordReset: React.FC = () => {
       return;
     }
     try {
-      await updatePassword(newPassword);
+      await api.post('/auth/reset-password', { token, password: newPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
