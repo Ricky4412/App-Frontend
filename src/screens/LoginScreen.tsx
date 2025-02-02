@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert, ActivityIndicator, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, Alert, ActivityIndicator, ImageBackground, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import InputField from '../components/InputField';
 import CustomButton from '../components/CustomButton';
@@ -11,13 +11,15 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleLogin = async () => {
     setLoading(true);
+    setErrorMessage('');
     try {
       const response = await login(email, password);
       const { role } = response.user;
-      await AsyncStorage.setItem('authToken', response.token); // Save the token
+      await AsyncStorage.setItem('authToken', response.token);
       Alert.alert('Login successful', `Welcome, ${response.user.name}`);
       if (role === 'admin') {
         navigation.navigate('Admin');
@@ -25,7 +27,7 @@ const LoginScreen: React.FC = () => {
         navigation.navigate('Main');
       }
     } catch (error: any) {
-      Alert.alert('Login failed', error.message);
+      setErrorMessage('Incorrect email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -53,11 +55,15 @@ const LoginScreen: React.FC = () => {
           placeholderTextColor="#ccc"
           style={[styles.inputField, styles.textInput]}
         />
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
         {loading ? (
           <ActivityIndicator size="large" color="#fff" />
         ) : (
           <CustomButton title="Login" onPress={handleLogin} style={styles.loginButton} />
         )}
+        <TouchableOpacity onPress={() => navigation.navigate('PasswordReset')}>
+          <Text style={styles.forgotPassword}>Forgot Password?</Text>
+        </TouchableOpacity>
         <Text style={styles.registerPrompt}>
           Don't have an account?{' '}
           <Text
@@ -110,6 +116,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'tomato',
     borderRadius: 10,
     padding: 10,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  forgotPassword: {
+    color: 'tomato',
+    marginTop: 12,
+    textAlign: 'center',
+    fontSize: 14,
   },
   registerPrompt: {
     marginTop: 20,
