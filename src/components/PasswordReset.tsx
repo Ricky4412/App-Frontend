@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import api from '../../services/api';
@@ -11,7 +11,6 @@ const PasswordReset: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
   const navigation = useNavigation();
   const route = useRoute<PasswordResetRouteProp>();
   const token = route.params?.token;
@@ -21,7 +20,6 @@ const PasswordReset: React.FC = () => {
     try {
       await api.post('/api/auth/request-reset', { email });
       Alert.alert('Success', 'Reset link sent to your email');
-      setStep(2);
       setErrorMessage('');
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || 'Failed to send reset link. Please try again.');
@@ -58,7 +56,7 @@ const PasswordReset: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {step === 1 ? (
+      {!token ? (
         <>
           <TextInput
             style={styles.input}
