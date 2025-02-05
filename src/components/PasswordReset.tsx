@@ -15,6 +15,12 @@ const PasswordReset: React.FC = () => {
   const route = useRoute<PasswordResetRouteProp>();
   const token = route.params?.token;
 
+  useEffect(() => {
+    if (!token) {
+      setErrorMessage('Invalid or missing token.');
+    }
+  }, [token]);
+
   const handleSendResetLink = async () => {
     setLoading(true);
     try {
