@@ -16,8 +16,13 @@ const PasswordReset: React.FC = () => {
   const token = route.params?.token;
 
   useEffect(() => {
-    if (!token) {
-      setErrorMessage('Invalid or missing token.');
+    if (token) {
+      // If token is present, clear email field
+      setEmail('');
+    } else {
+      // If token is not present, clear password fields
+      setNewPassword('');
+      setConfirmPassword('');
     }
   }, [token]);
 
