@@ -15,7 +15,7 @@
     "scheme": "frontend",
     "deeplinks": [
       "frontend://reset-password",
-      "https://app-frontend-five-dun.vercel.app//reset-password"
+      "https://app-frontend-five-dun.vercel.app/reset-password"
     ],
     "ios": {
       "supportsTablet": true,
