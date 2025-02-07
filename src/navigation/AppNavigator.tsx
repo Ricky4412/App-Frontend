@@ -30,10 +30,10 @@ type RootStackParamList = {
   OTPVerificationScreen: { userId: string; role: string };
   Admin: undefined;
   Main: undefined;
-  BookDetails: { book: any };
+  BookDetails: { book: { id: string; title: string; author: string; description: string; coverUrl: string } };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: { token?: string }; // Ensure PasswordReset receives token
+  PasswordReset: { token?: string };
 };
 
 type TabParamList = {
@@ -99,7 +99,7 @@ const MainTabNavigator: React.FC = () => {
               iconName = 'person-outline';
               break;
             case 'Subscription':
-              iconName = 'card-outline';
+              iconName = 'wallet-outline'; // Changed from "card-outline" for better clarity
               break;
             case 'Chat':
               iconName = 'chatbubble-outline';
@@ -111,7 +111,7 @@ const MainTabNavigator: React.FC = () => {
         tabBarShowLabel: false,
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
-        headerShown: route.name !== 'Home',
+        headerShown: false, // ✅ Ensures no header on the main tab navigator
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -128,7 +128,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   config: {
     screens: {
       PasswordReset: {
-        path: 'reset-password',
+        path: 'reset-password/:token', // ✅ Updated to correctly handle dynamic token
         parse: {
           token: (token: string) => token,
         },
@@ -139,6 +139,8 @@ const linking: LinkingOptions<RootStackParamList> = {
 
 // ✅ Main Stack Navigator
 const AppNavigator: React.FC = () => {
+  const isAdmin = false; // Placeholder; should be dynamically determined from authentication context
+
   return (
     <NavigationContainer linking={linking}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -146,7 +148,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
-        <Stack.Screen name="Admin" component={AdminNavigator} />
+        {isAdmin && <Stack.Screen name="Admin" component={AdminNavigator} />} {/* ✅ Admin navigation conditionally rendered */}
         <Stack.Screen name="BookDetails" component={BookDetails} />
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
