@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet 
-} from 'react-native';
+  View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import api from '../../services/api';
+import api from '../../services/api'
 
 const PasswordReset: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
   // ✅ State variables
-  const [token, setToken] = useState<string | null>(null);
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [userId, setUserId] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // ✅ Extract token from navigation params
-  useEffect(() => {
-    if (route.params?.token) {
-      setToken(route.params.token as string);
-    }
-  }, [route.params]);
 
   // ✅ Function to send reset link
   const handleSendResetLink = async () => {
@@ -34,10 +28,31 @@ const PasswordReset: React.FC = () => {
     setLoading(true);
     setErrorMessage('');
     try {
-      await api.post('/api/auth/request-reset', { email });
-      Alert.alert('Success', 'A password reset link has been sent to your email.');
+      const response = await api.post('/api/auth/request-reset', { email });
+      setUserId(response.data.userId);
+      setStep(2);
+      Alert.alert('Success', 'A password reset OTP has been sent to your email.');
     } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || 'Failed to send reset link. Please try again.');
+      setErrorMessage(error.response?.data?.message || 'Failed to send reset OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Function to verify OTP
+  const handleVerifyOtp = async () => {
+    if (!otp) {
+      setErrorMessage('Please enter the OTP.');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage('');
+    try {
+      const response = await api.post('/api/auth/verify-otp', { userId, otp });
+      setStep(3);
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || 'Invalid OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -45,10 +60,6 @@ const PasswordReset: React.FC = () => {
 
   // ✅ Function to update password
   const handleUpdatePassword = async () => {
-    if (!token) {
-      setErrorMessage('Invalid or expired reset link. Please request a new one.');
-      return;
-    }
     if (!newPassword || !confirmPassword) {
       setErrorMessage('Please enter both password fields.');
       return;
@@ -65,7 +76,7 @@ const PasswordReset: React.FC = () => {
     setLoading(true);
     setErrorMessage('');
     try {
-      await api.post('/api/auth/reset-password', { token, password: newPassword });
+      await api.post(`/api/auth/reset-password`, { userId, otp, password: newPassword, confirmPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
@@ -83,10 +94,9 @@ const PasswordReset: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {!token ? (
-        // ✅ Email input section (for requesting reset link)
+      {step === 1 && (
         <>
-          <Text style={styles.label}>Enter your email to receive a reset link:</Text>
+          <Text style={styles.label}>Enter your email to receive a reset OTP:</Text>
           <TextInput
             style={styles.input}
             placeholder="Email Address"
@@ -100,12 +110,32 @@ const PasswordReset: React.FC = () => {
             <ActivityIndicator size="large" color="#007bff" />
           ) : (
             <TouchableOpacity style={styles.button} onPress={handleSendResetLink}>
-              <Text style={styles.buttonText}>Send Reset Link</Text>
+              <Text style={styles.buttonText}>Send Reset OTP</Text>
             </TouchableOpacity>
           )}
         </>
-      ) : (
-        // ✅ Password reset section
+      )}
+      {step === 2 && (
+        <>
+          <Text style={styles.label}>Enter the OTP sent to your email:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="OTP"
+            value={otp}
+            onChangeText={setOtp}
+            keyboardType="numeric"
+          />
+          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          {loading ? (
+            <ActivityIndicator size="large" color="#007bff" />
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={handleVerifyOtp}>
+              <Text style={styles.buttonText}>Submit OTP</Text>
+            </TouchableOpacity>
+          )}
+        </>
+      )}
+      {step === 3 && (
         <>
           <Text style={styles.label}>Enter your new password:</Text>
           <TextInput
