@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -33,7 +33,7 @@ type RootStackParamList = {
   BookDetails: { book: any };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: { token?: string }; // Add PasswordReset route with optional token
+  PasswordReset: { token?: string }; // Ensure PasswordReset receives token
 };
 
 type TabParamList = {
@@ -61,6 +61,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
 const SubscriptionStack = createStackNavigator<SubscriptionStackParamList>();
 
+// ✅ Profile Stack Navigator
 const ProfileNavigator: React.FC = () => {
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
@@ -71,6 +72,7 @@ const ProfileNavigator: React.FC = () => {
   );
 };
 
+// ✅ Subscription Stack Navigator
 const SubscriptionNavigator: React.FC = () => {
   return (
     <SubscriptionStack.Navigator screenOptions={{ headerShown: false }}>
@@ -81,6 +83,7 @@ const SubscriptionNavigator: React.FC = () => {
   );
 };
 
+// ✅ Bottom Tab Navigator
 const MainTabNavigator: React.FC = () => {
   return (
     <Tab.Navigator
@@ -119,9 +122,25 @@ const MainTabNavigator: React.FC = () => {
   );
 };
 
+// ✅ Deep Linking Support
+const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: ['https://yourapp.com', 'yourapp://'],
+  config: {
+    screens: {
+      PasswordReset: {
+        path: 'reset-password',
+        parse: {
+          token: (token: string) => token,
+        },
+      },
+    },
+  },
+};
+
+// ✅ Main Stack Navigator
 const AppNavigator: React.FC = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
