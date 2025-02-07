@@ -5,7 +5,6 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "deeplinks": ["reset-password"],
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -13,8 +12,17 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "frontend",
+    "deeplinks": [
+      "frontend://reset-password",
+      "https://yourdomain.com/reset-password"
+    ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.frontend",
+      "associatedDomains": [
+        "applinks:yourdomain.com"
+      ],
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true
@@ -25,9 +33,30 @@
       }
     },
     "android": {
+      "package": "com.yourcompany.frontend",
       "permissions": [
         "INTERNET",
         "WRITE_EXTERNAL_STORAGE"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "yourdomain.com",
+              "pathPrefix": "/reset-password"
+            },
+            {
+              "scheme": "frontend",
+              "host": "reset-password"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
