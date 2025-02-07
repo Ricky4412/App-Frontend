@@ -25,7 +25,7 @@ const PasswordReset: React.FC = () => {
     setErrorMessage('');
     try {
       await api.post('/api/auth/request-reset', { email });
-      Alert.alert('Success', 'Reset link sent to your email');
+      Alert.alert('Success', 'A password reset link has been sent to your email.');
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || 'Failed to send reset link. Please try again.');
     } finally {
@@ -49,8 +49,8 @@ const PasswordReset: React.FC = () => {
     setLoading(true);
     setErrorMessage('');
     try {
-      // ✅ Fixed: Send token in the URL path
-      await api.post(`/api/auth/reset-password/${token}`, { password: newPassword });
+      // ✅ Fixed: Sending token inside the request body (not the URL)
+      await api.post('/api/auth/reset-password', { token, password: newPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
@@ -69,9 +69,10 @@ const PasswordReset: React.FC = () => {
     <View style={styles.container}>
       {!token ? (
         <>
+          <Text style={styles.label}>Enter your email to receive a reset link:</Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter your email address"
+            placeholder="Email Address"
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -86,6 +87,7 @@ const PasswordReset: React.FC = () => {
         </>
       ) : (
         <>
+          <Text style={styles.label}>Enter your new password:</Text>
           <TextInput
             style={styles.input}
             placeholder="New Password"
@@ -117,6 +119,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#fff',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    textAlign: 'center',
   },
   input: {
     height: 40,
@@ -124,6 +132,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+    borderRadius: 5,
   },
   errorText: {
     color: 'red',
