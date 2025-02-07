@@ -33,7 +33,7 @@ type RootStackParamList = {
   BookDetails: { book: { id: string; title: string; author: string; description: string; coverUrl: string } };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: { token?: string; userId?: string };
+  PasswordReset: undefined;
 };
 
 type TabParamList = {
@@ -116,11 +116,11 @@ const MainTabNavigator: React.FC = () => (
   </Tab.Navigator>
 );
 
-// ✅ Deep Linking Configuration (Fix for Password Reset)
+// ✅ Deep Linking Configuration
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
-    'https://app-frontend-five-dun.vercel.app', // ✅ Hosted frontend (update if needed)
-    'frontend://' // ✅ Custom scheme for mobile deep linking
+    'https://app-frontend-five-dun.vercel.app',
+    'frontend://'
   ],
   config: {
     screens: {
@@ -131,19 +131,13 @@ const linking: LinkingOptions<RootStackParamList> = {
       BookDetails: "book/:id",
       ReadingScreen: "reading/:contentUrl",
       ReviewCard: "review/:bookId",
-      PasswordReset: {
-        path: "reset-password/:token/:userId",
-        parse: {
-          token: (token: string) => token,
-          userId: (userId: string) => userId,
-        },
-      },
+      PasswordReset: "reset-password/:token/:userId",
     },
   },
   async getInitialURL() {
     try {
       const url = await Linking.getInitialURL();
-      console.log("Initial deep link URL:", url); // ✅ Debugging log
+      console.log("Initial deep link URL:", url);
       return url;
     } catch (error) {
       console.error("Failed to get initial URL:", error);
@@ -152,7 +146,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   },
   subscribe(listener) {
     const handleDeepLink = ({ url }: { url: string }) => {
-      console.log("Deep link triggered:", url); // ✅ Debugging log
+      console.log("Deep link triggered:", url);
       listener(url);
     };
 
@@ -173,8 +167,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
         
-        {/* ✅ Correctly renders AdminNavigator only if isAdmin is true */}
-        {isAdmin ? <Stack.Screen name="Admin" component={AdminNavigator} /> : null}
+        {isAdmin && <Stack.Screen name="Admin" component={AdminNavigator} />}
 
         <Stack.Screen name="BookDetails" component={BookDetails} />
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
