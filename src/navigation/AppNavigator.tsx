@@ -3,7 +3,6 @@ import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
@@ -20,7 +19,7 @@ import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import Chat from '../components/Chat';
 import BookDetails from '../components/BookDetails';
 import ReadingScreen from '../components/ReadingScreen';
-import ReviewCard from "../components/ReviewCard";
+import ReviewCard from '../components/ReviewCard';
 import PasswordReset from '../components/PasswordReset';
 
 // Define types for stack and tab navigators
@@ -62,65 +61,59 @@ const ProfileStack = createStackNavigator<ProfileStackParamList>();
 const SubscriptionStack = createStackNavigator<SubscriptionStackParamList>();
 
 // ✅ Profile Stack Navigator
-const ProfileNavigator: React.FC = () => {
-  return (
-    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
-      <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
-      <ProfileStack.Screen name="EditProfile" component={EditProfile} />
-      <ProfileStack.Screen name="ChangePassword" component={ChangePassword} />
-    </ProfileStack.Navigator>
-  );
-};
+const ProfileNavigator: React.FC = () => (
+  <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+    <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
+    <ProfileStack.Screen name="EditProfile" component={EditProfile} />
+    <ProfileStack.Screen name="ChangePassword" component={ChangePassword} />
+  </ProfileStack.Navigator>
+);
 
 // ✅ Subscription Stack Navigator
-const SubscriptionNavigator: React.FC = () => {
-  return (
-    <SubscriptionStack.Navigator screenOptions={{ headerShown: false }}>
-      <SubscriptionStack.Screen name="SubscriptionMain" component={SubscriptionScreen} />
-      <SubscriptionStack.Screen name="PaymentScreen" component={PaymentScreen} />
-      <SubscriptionStack.Screen name="PaymentSuccess" component={PaymentSuccess} />
-    </SubscriptionStack.Navigator>
-  );
-};
+const SubscriptionNavigator: React.FC = () => (
+  <SubscriptionStack.Navigator screenOptions={{ headerShown: false }}>
+    <SubscriptionStack.Screen name="SubscriptionMain" component={SubscriptionScreen} />
+    <SubscriptionStack.Screen name="PaymentScreen" component={PaymentScreen} />
+    <SubscriptionStack.Screen name="PaymentSuccess" component={PaymentSuccess} />
+  </SubscriptionStack.Navigator>
+);
 
 // ✅ Bottom Tab Navigator
-const MainTabNavigator: React.FC = () => {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName: string = '';
+const MainTabNavigator: React.FC = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ color, size }) => {
+        let iconName = '';
 
-          switch (route.name) {
-            case 'Home':
-              iconName = 'home-outline';
-              break;
-            case 'Profile':
-              iconName = 'person-outline';
-              break;
-            case 'Subscription':
-              iconName = 'wallet-outline'; // Changed from "card-outline" for better clarity
-              break;
-            case 'Chat':
-              iconName = 'chatbubble-outline';
-              break;
-          }
+        switch (route.name) {
+          case 'Home':
+            iconName = 'home-outline';
+            break;
+          case 'Profile':
+            iconName = 'person-outline';
+            break;
+          case 'Subscription':
+            iconName = 'wallet-outline';
+            break;
+          case 'Chat':
+            iconName = 'chatbubble-outline';
+            break;
+        }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
-        headerShown: false, // ✅ Ensures no header on the main tab navigator
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={ProfileNavigator} />
-      <Tab.Screen name="Subscription" component={SubscriptionNavigator} />
-      <Tab.Screen name="Chat" component={Chat} />
-    </Tab.Navigator>
-  );
-};
+        return <Ionicons name={iconName} size={size} color={color} />;
+      },
+      tabBarShowLabel: false,
+      tabBarActiveTintColor: 'tomato',
+      tabBarInactiveTintColor: 'gray',
+      headerShown: false, // ✅ Ensures no header on the main tab navigator
+    })}
+  >
+    <Tab.Screen name="Home" component={HomeScreen} />
+    <Tab.Screen name="Profile" component={ProfileNavigator} />
+    <Tab.Screen name="Subscription" component={SubscriptionNavigator} />
+    <Tab.Screen name="Chat" component={Chat} />
+  </Tab.Navigator>
+);
 
 // ✅ Deep Linking Support
 const linking: LinkingOptions<RootStackParamList> = {
@@ -128,7 +121,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   config: {
     screens: {
       PasswordReset: {
-        path: 'reset-password/:token', // ✅ Updated to correctly handle dynamic token
+        path: 'reset-password/:token', // ✅ Correctly handles dynamic token
         parse: {
           token: (token: string) => token,
         },
@@ -139,7 +132,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 
 // ✅ Main Stack Navigator
 const AppNavigator: React.FC = () => {
-  const isAdmin = false; // Placeholder; should be dynamically determined from authentication context
+  const isAdmin: boolean = false; // Placeholder; should be dynamically determined from authentication context
 
   return (
     <NavigationContainer linking={linking}>
@@ -148,7 +141,10 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
-        {isAdmin && <Stack.Screen name="Admin" component={AdminNavigator} />} {/* ✅ Admin navigation conditionally rendered */}
+        
+        {/* ✅ Correctly renders AdminNavigator only if isAdmin is true */}
+        {isAdmin ? <Stack.Screen name="Admin" component={AdminNavigator} /> : null}
+
         <Stack.Screen name="BookDetails" component={BookDetails} />
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
