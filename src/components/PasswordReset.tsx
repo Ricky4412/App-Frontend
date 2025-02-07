@@ -1,35 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import api from '../../services/api';
 
 const PasswordReset: React.FC = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
 
   useEffect(() => {
-    // Extract token from URL query params
-    const getTokenFromUrl = () => {
-      const url = new URL(window.location.href);
-      const urlToken = url.searchParams.get('token');
-      if (urlToken) {
-        setToken(urlToken);
-      }
-    };
-    getTokenFromUrl();
-  }, []);
+    // ✅ Extract token from React Navigation route params
+    if (route.params?.token) {
+      setToken(route.params.token as string);
+    }
+  }, [route.params]);
 
   const handleSendResetLink = async () => {
     setLoading(true);
+    setErrorMessage('');
     try {
       await api.post('/api/auth/request-reset', { email });
       Alert.alert('Success', 'Reset link sent to your email');
-      setErrorMessage('');
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || 'Failed to send reset link. Please try again.');
     } finally {
@@ -39,7 +35,7 @@ const PasswordReset: React.FC = () => {
 
   const handleUpdatePassword = async () => {
     if (!token) {
-      setErrorMessage('Invalid reset link. Please request a new one.');
+      setErrorMessage('Invalid or expired reset link. Please request a new one.');
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -51,8 +47,10 @@ const PasswordReset: React.FC = () => {
       return;
     }
     setLoading(true);
+    setErrorMessage('');
     try {
-      await api.post('/api/auth/reset-password', { token, password: newPassword });
+      // ✅ Fixed: Send token in the URL path
+      await api.post(`/api/auth/reset-password/${token}`, { password: newPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
