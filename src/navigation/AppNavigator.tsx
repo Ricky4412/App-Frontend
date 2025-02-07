@@ -33,7 +33,7 @@ type RootStackParamList = {
   BookDetails: { book: { id: string; title: string; author: string; description: string; coverUrl: string } };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: { token?: string };
+  PasswordReset: { token?: string; userId?: string };
 };
 
 type TabParamList = {
@@ -120,7 +120,7 @@ const MainTabNavigator: React.FC = () => (
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
     'https://app-frontend-five-dun.vercel.app', // ✅ Hosted frontend (update if needed)
-    'yourapp://' // ✅ Custom scheme for mobile deep linking
+    'frontend://' // ✅ Custom scheme for mobile deep linking
   ],
   config: {
     screens: {
@@ -132,9 +132,10 @@ const linking: LinkingOptions<RootStackParamList> = {
       ReadingScreen: "reading/:contentUrl",
       ReviewCard: "review/:bookId",
       PasswordReset: {
-        path: "reset-password/:token",
+        path: "reset-password/:token/:userId",
         parse: {
-          token: (token: string) => token, // ✅ Extracts token correctly
+          token: (token: string) => token,
+          userId: (userId: string) => userId,
         },
       },
     },
