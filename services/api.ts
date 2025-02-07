@@ -49,6 +49,9 @@ api.interceptors.response.use(
         case 404:
           console.error('Resource not found');
           break;
+        case 500:
+          console.error('Internal server error');
+          break;
         default:
           console.error('An unexpected error occurred');
       }
