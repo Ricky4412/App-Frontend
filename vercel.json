@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/reset-password/:token",
+      "destination": "frontend://reset-password/:token",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/reset-password/:token",
+      "destination": "/index.html"
+    }
+  ]
+}
