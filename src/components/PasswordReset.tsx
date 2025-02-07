@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
 
-type PasswordResetRouteProp = RouteProp<{ params: { token?: string } }, 'params'>;
-
 const PasswordReset: React.FC = () => {
+  const [token, setToken] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const route = useRoute<PasswordResetRouteProp>();
-  const token = route.params?.token;
 
   useEffect(() => {
-    if (token) {
-      // If token is present, clear email field
-      setEmail('');
-    } else {
-      // If token is not present, clear password fields
-      setNewPassword('');
-      setConfirmPassword('');
-    }
-  }, [token]);
+    // Extract token from URL query params
+    const getTokenFromUrl = () => {
+      const url = new URL(window.location.href);
+      const urlToken = url.searchParams.get('token');
+      if (urlToken) {
+        setToken(urlToken);
+      }
+    };
+    getTokenFromUrl();
+  }, []);
 
   const handleSendResetLink = async () => {
     setLoading(true);
@@ -40,12 +38,16 @@ const PasswordReset: React.FC = () => {
   };
 
   const handleUpdatePassword = async () => {
+    if (!token) {
+      setErrorMessage('Invalid reset link. Please request a new one.');
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setErrorMessage('Passwords do not match.');
       return;
     }
     if (!validatePassword(newPassword)) {
-      setErrorMessage('Password must be at least 8 characters and include alphabets, numbers, and symbols.');
+      setErrorMessage('Password must be at least 8 characters and include letters, numbers, and symbols.');
       return;
     }
     setLoading(true);
