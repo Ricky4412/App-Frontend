@@ -66,10 +66,10 @@ export const requestPasswordReset = async (email: string): Promise<any> => {
   }
 };
 
-// Reset user password
+// ✅ FIXED: Reset user password (Send token in the URL, not in the body)
 export const resetPassword = async (token: string, password: string): Promise<any> => {
   try {
-    const response = await api.post('/api/auth/reset-password', { token, password });
+    const response = await api.post(`/api/auth/reset-password/${token}`, { password });  // ✅ Corrected URL
     return response.data;
   } catch (error) {
     console.error('Error resetting password:', error);
