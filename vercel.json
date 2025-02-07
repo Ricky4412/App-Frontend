@@ -1,9 +1,1 @@
-{
-  "redirects": [
-    {
-      "source": "/reset-password/:token",
-      "destination": "myapp://reset-password/:token",
-      "permanent": false
-    }
-  ]
-}
+
