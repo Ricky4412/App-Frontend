@@ -65,7 +65,7 @@ const PasswordReset: React.FC = () => {
     setLoading(true);
     setErrorMessage('');
     try {
-      await api.post('/api/auth/reset-password', { token, password: newPassword });
+      await api.post(`/api/auth/reset-password/${token}`, { password: newPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
