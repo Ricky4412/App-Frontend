@@ -3,6 +3,7 @@ import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { Linking } from 'react-native';
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
@@ -105,7 +106,7 @@ const MainTabNavigator: React.FC = () => (
       tabBarShowLabel: false,
       tabBarActiveTintColor: 'tomato',
       tabBarInactiveTintColor: 'gray',
-      headerShown: false, // ✅ Ensures no header on the main tab navigator
+      headerShown: false,
     })}
   >
     <Tab.Screen name="Home" component={HomeScreen} />
@@ -115,18 +116,47 @@ const MainTabNavigator: React.FC = () => (
   </Tab.Navigator>
 );
 
-// ✅ Deep Linking Support
+// ✅ Deep Linking Configuration (Fix for Password Reset)
 const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['https://yourapp.com', 'yourapp://'],
+  prefixes: [
+    'https://app-frontend-five-dun.vercel.app', // ✅ Hosted frontend (update if needed)
+    'yourapp://' // ✅ Custom scheme for mobile deep linking
+  ],
   config: {
     screens: {
+      Login: "login",
+      RegisterScreen: "register",
+      OTPVerificationScreen: "verify-otp",
+      Main: "home",
+      BookDetails: "book/:id",
+      ReadingScreen: "reading/:contentUrl",
+      ReviewCard: "review/:bookId",
       PasswordReset: {
-        path: 'reset-password/:token', // ✅ Correctly handles dynamic token
+        path: "reset-password/:token",
         parse: {
-          token: (token: string) => token,
+          token: (token: string) => token, // ✅ Extracts token correctly
         },
       },
     },
+  },
+  async getInitialURL() {
+    try {
+      const url = await Linking.getInitialURL();
+      console.log("Initial deep link URL:", url); // ✅ Debugging log
+      return url;
+    } catch (error) {
+      console.error("Failed to get initial URL:", error);
+      return null;
+    }
+  },
+  subscribe(listener) {
+    const handleDeepLink = ({ url }: { url: string }) => {
+      console.log("Deep link triggered:", url); // ✅ Debugging log
+      listener(url);
+    };
+
+    const subscription = Linking.addEventListener("url", handleDeepLink);
+    return () => subscription.remove();
   },
 };
 
