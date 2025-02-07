@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+  View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet 
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import api from '../../services/api'
+import api from '../services/api';
 
 const PasswordReset: React.FC = () => {
   const route = useRoute();
@@ -51,6 +52,7 @@ const PasswordReset: React.FC = () => {
     try {
       const response = await api.post('/api/auth/verify-otp', { userId, otp });
       setStep(3);
+      Alert.alert('Success', 'OTP verified successfully.');
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || 'Invalid OTP. Please try again.');
     } finally {
