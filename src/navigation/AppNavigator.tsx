@@ -120,7 +120,7 @@ const MainTabNavigator: React.FC = () => (
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
     'https://app-frontend-five-dun.vercel.app', // ✅ Hosted frontend (update if needed)
-    'frontend://' // ✅ Custom scheme for mobile deep linking
+    'frontend://app-frontend-five-dun.vercel.app/reset-password' 
   ],
   config: {
     screens: {
