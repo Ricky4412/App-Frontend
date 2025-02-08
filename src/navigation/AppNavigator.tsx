@@ -22,7 +22,7 @@ import BookDetails from '../components/BookDetails';
 import ReadingScreen from '../components/ReadingScreen';
 import ReviewCard from '../components/ReviewCard';
 import PasswordReset from '../components/PasswordReset';
-import SetNewPassword from '../components/SetNewPassword'; // Import the new SetNewPassword component
+import SetNewPassword from '../components/SetNewPassword'; 
 
 // Define types for stack and tab navigators
 type RootStackParamList = {
