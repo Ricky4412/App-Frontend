@@ -3,12 +3,12 @@ import {
   View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import api from '../../services/api'
+import api from '../services/api';
 
 const PasswordReset: React.FC = () => {
   const navigation = useNavigation();
 
-  // ✅ State variables
+  // State variables
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -18,7 +18,7 @@ const PasswordReset: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // ✅ Function to send reset link
+  // Function to send reset link
   const handleSendResetLink = async () => {
     if (!email) {
       setErrorMessage('Please enter your email.');
@@ -39,7 +39,7 @@ const PasswordReset: React.FC = () => {
     }
   };
 
-  // ✅ Function to verify OTP
+  // Function to verify OTP
   const handleVerifyOtp = async () => {
     if (!otp) {
       setErrorMessage('Please enter the OTP.');
@@ -59,7 +59,7 @@ const PasswordReset: React.FC = () => {
     }
   };
 
-  // ✅ Function to update password
+  // Function to update password
   const handleUpdatePassword = async () => {
     if (!newPassword || !confirmPassword) {
       setErrorMessage('Please enter both password fields.');
@@ -87,7 +87,7 @@ const PasswordReset: React.FC = () => {
     }
   };
 
-  // ✅ Password validation function
+  // Password validation function
   const validatePassword = (password: string) => {
     const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     return regex.test(password);
@@ -167,7 +167,7 @@ const PasswordReset: React.FC = () => {
   );
 };
 
-// ✅ Updated Styles for better UI
+// Updated Styles for better UI
 const styles = StyleSheet.create({
   container: {
     flex: 1,
