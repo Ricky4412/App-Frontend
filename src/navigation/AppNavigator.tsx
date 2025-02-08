@@ -61,7 +61,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
 const SubscriptionStack = createStackNavigator<SubscriptionStackParamList>();
 
-// ✅ Profile Stack Navigator
+// Profile Stack Navigator
 const ProfileNavigator: React.FC = () => (
   <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
     <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
@@ -70,7 +70,7 @@ const ProfileNavigator: React.FC = () => (
   </ProfileStack.Navigator>
 );
 
-// ✅ Subscription Stack Navigator
+// Subscription Stack Navigator
 const SubscriptionNavigator: React.FC = () => (
   <SubscriptionStack.Navigator screenOptions={{ headerShown: false }}>
     <SubscriptionStack.Screen name="SubscriptionMain" component={SubscriptionScreen} />
@@ -79,7 +79,7 @@ const SubscriptionNavigator: React.FC = () => (
   </SubscriptionStack.Navigator>
 );
 
-// ✅ Bottom Tab Navigator
+// Bottom Tab Navigator
 const MainTabNavigator: React.FC = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -116,7 +116,7 @@ const MainTabNavigator: React.FC = () => (
   </Tab.Navigator>
 );
 
-// ✅ Deep Linking Configuration
+// Deep Linking Configuration
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
     'https://app-frontend-five-dun.vercel.app',
@@ -161,7 +161,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   },
 };
 
-// ✅ Main Stack Navigator
+// Main Stack Navigator
 const AppNavigator: React.FC = () => {
   const isAdmin: boolean = false; // Placeholder; should be dynamically determined from authentication context
 
