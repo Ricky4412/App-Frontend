@@ -22,21 +22,20 @@ import BookDetails from '../components/BookDetails';
 import ReadingScreen from '../components/ReadingScreen';
 import ReviewCard from '../components/ReviewCard';
 import PasswordReset from '../components/PasswordReset';
-import SetNewPassword from '../components/SetNewPassword'; 
+import SetNewPassword from '../components/SetNewPassword';
 
 // Define types for stack and tab navigators
 type RootStackParamList = {
   Login: undefined;
   RegisterScreen: undefined;
-  OTPVerificationScreen: { userId: string; role: string };
+  OTPVerificationScreen: { userId: string; role: string; nextScreen?: string };
   Admin: undefined;
   Main: undefined;
   BookDetails: { book: { id: string; title: string; author: string; description: string; coverUrl: string } };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: { token?: string; userId?: string };
-  SetNewPassword: { userId: string }; 
-
+  PasswordReset: undefined;
+  SetNewPassword: { userId: string };
 };
 
 type TabParamList = {
@@ -64,7 +63,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
 const SubscriptionStack = createStackNavigator<SubscriptionStackParamList>();
 
-// ✅ Profile Stack Navigator
+// Profile Stack Navigator
 const ProfileNavigator: React.FC = () => (
   <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
     <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
@@ -73,7 +72,7 @@ const ProfileNavigator: React.FC = () => (
   </ProfileStack.Navigator>
 );
 
-// ✅ Subscription Stack Navigator
+// Subscription Stack Navigator
 const SubscriptionNavigator: React.FC = () => (
   <SubscriptionStack.Navigator screenOptions={{ headerShown: false }}>
     <SubscriptionStack.Screen name="SubscriptionMain" component={SubscriptionScreen} />
@@ -82,7 +81,7 @@ const SubscriptionNavigator: React.FC = () => (
   </SubscriptionStack.Navigator>
 );
 
-// ✅ Bottom Tab Navigator
+// Bottom Tab Navigator
 const MainTabNavigator: React.FC = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -119,11 +118,11 @@ const MainTabNavigator: React.FC = () => (
   </Tab.Navigator>
 );
 
-// ✅ Deep Linking Configuration (Fix for Password Reset)
+// Deep Linking Configuration
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [
-    'https://app-frontend-five-dun.vercel.app', // ✅ Hosted frontend (update if needed)
-    'frontend://' // ✅ Custom scheme for mobile deep linking
+    'https://app-frontend-five-dun.vercel.app',
+    'frontend://'
   ],
   config: {
     screens: {
@@ -134,14 +133,14 @@ const linking: LinkingOptions<RootStackParamList> = {
       BookDetails: "book/:id",
       ReadingScreen: "reading/:contentUrl",
       ReviewCard: "review/:bookId",
-       PasswordReset: "reset-password",
+      PasswordReset: "reset-password",
       SetNewPassword: "set-new-password/:userId"
     },
   },
   async getInitialURL() {
     try {
       const url = await Linking.getInitialURL();
-      console.log("Initial deep link URL:", url); // ✅ Debugging log
+      console.log("Initial deep link URL:", url);
       return url;
     } catch (error) {
       console.error("Failed to get initial URL:", error);
@@ -150,7 +149,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   },
   subscribe(listener) {
     const handleDeepLink = ({ url }: { url: string }) => {
-      console.log("Deep link triggered:", url); // ✅ Debugging log
+      console.log("Deep link triggered:", url);
       listener(url);
     };
 
@@ -159,7 +158,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   },
 };
 
-// ✅ Main Stack Navigator
+// Main Stack Navigator
 const AppNavigator: React.FC = () => {
   const isAdmin: boolean = false; // Placeholder; should be dynamically determined from authentication context
 
@@ -171,15 +170,13 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
         
-        {/* ✅ Correctly renders AdminNavigator only if isAdmin is true */}
-        {isAdmin ? <Stack.Screen name="Admin" component={AdminNavigator} /> : null}
+        {isAdmin && <Stack.Screen name="Admin" component={AdminNavigator} />}
 
         <Stack.Screen name="BookDetails" component={BookDetails} />
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
         <Stack.Screen name="PasswordReset" component={PasswordReset} />
-        <Stack.Screen name="SetNewPassword" component={SetNewPassword} /> 
-
+        <Stack.Screen name="SetNewPassword" component={SetNewPassword} />
       </Stack.Navigator>
     </NavigationContainer>
   );
