@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { 
   View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet 
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api'
 
 const PasswordReset: React.FC = () => {
-  const route = useRoute();
   const navigation = useNavigation();
 
   // ✅ State variables
