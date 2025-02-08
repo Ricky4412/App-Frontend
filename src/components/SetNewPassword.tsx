@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { 
+  View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet 
+} from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import api from '../../services/api';
 
@@ -10,12 +12,17 @@ const SetNewPassword: React.FC = () => {
   const route = useRoute<SetNewPasswordRouteProp>();
   const { userId } = route.params;
 
+  const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleUpdatePassword = async () => {
+    if (!otp) {
+      setErrorMessage('Please enter the OTP.');
+      return;
+    }
     if (!newPassword || !confirmPassword) {
       setErrorMessage('Please enter both password fields.');
       return;
@@ -32,7 +39,7 @@ const SetNewPassword: React.FC = () => {
     setLoading(true);
     setErrorMessage('');
     try {
-      await api.post(`/api/auth/reset-password`, { userId, password: newPassword, confirmPassword });
+      await api.post('/api/auth/reset-password', { userId, otp, password: newPassword, confirmPassword });
       Alert.alert('Success', 'Your password has been updated.');
       navigation.navigate('Login');
     } catch (error: any) {
@@ -49,6 +56,14 @@ const SetNewPassword: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.label}>Enter the OTP sent to your email:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="OTP"
+        value={otp}
+        onChangeText={setOtp}
+        keyboardType="numeric"
+      />
       <Text style={styles.label}>Enter your new password:</Text>
       <TextInput
         style={styles.input}
@@ -76,6 +91,7 @@ const SetNewPassword: React.FC = () => {
   );
 };
 
+// Styles for better UI
 const styles = StyleSheet.create({
   container: {
     flex: 1,
