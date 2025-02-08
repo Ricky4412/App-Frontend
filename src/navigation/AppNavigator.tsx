@@ -22,18 +22,20 @@ import BookDetails from '../components/BookDetails';
 import ReadingScreen from '../components/ReadingScreen';
 import ReviewCard from '../components/ReviewCard';
 import PasswordReset from '../components/PasswordReset';
+import SetNewPassword from '../components/SetNewPassword'; // Import the new SetNewPassword component
 
 // Define types for stack and tab navigators
 type RootStackParamList = {
   Login: undefined;
   RegisterScreen: undefined;
-  OTPVerificationScreen: { userId: string; role: string };
+  OTPVerificationScreen: { userId: string; role: string; nextScreen?: string };
   Admin: undefined;
   Main: undefined;
   BookDetails: { book: { id: string; title: string; author: string; description: string; coverUrl: string } };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: { token?: string; userId?: string };
+  PasswordReset: undefined;
+  SetNewPassword: { userId: string }; // Add SetNewPassword route
 };
 
 type TabParamList = {
@@ -131,13 +133,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       BookDetails: "book/:id",
       ReadingScreen: "reading/:contentUrl",
       ReviewCard: "review/:bookId",
-      PasswordReset: {
-        path: "reset-password/:token/:userId",
-        parse: {
-          token: (token: string) => token,
-          userId: (userId: string) => userId,
-        },
-      },
+      PasswordReset: "reset-password",
+      SetNewPassword: "set-new-password/:userId"
     },
   },
   async getInitialURL() {
@@ -179,6 +176,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
         <Stack.Screen name="PasswordReset" component={PasswordReset} />
+        <Stack.Screen name="SetNewPassword" component={SetNewPassword} /> {/* Add SetNewPassword screen */}
       </Stack.Navigator>
     </NavigationContainer>
   );
