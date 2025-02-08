@@ -33,7 +33,7 @@ type RootStackParamList = {
   BookDetails: { book: { id: string; title: string; author: string; description: string; coverUrl: string } };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
-  PasswordReset: undefined;
+  PasswordReset: { token?: string; userId?: string };
 };
 
 type TabParamList = {
@@ -131,7 +131,13 @@ const linking: LinkingOptions<RootStackParamList> = {
       BookDetails: "book/:id",
       ReadingScreen: "reading/:contentUrl",
       ReviewCard: "review/:bookId",
-      PasswordReset: "reset-password/:token/:userId",
+      PasswordReset: {
+        path: "reset-password/:token/:userId",
+        parse: {
+          token: (token: string) => token,
+          userId: (userId: string) => userId,
+        },
+      },
     },
   },
   async getInitialURL() {
