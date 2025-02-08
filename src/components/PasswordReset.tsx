@@ -22,7 +22,7 @@ const PasswordReset: React.FC = () => {
       const response = await api.post('/api/auth/request-reset', { email });
       const userId = response.data.userId;
       Alert.alert('Success', 'A password reset OTP has been sent to your email.');
-      navigation.navigate('OTPVerification', { userId, role: 'user', nextScreen: 'SetNewPassword' });
+      navigation.navigate('OTPVerificationScreen', { userId, role: 'user', nextScreen: 'SetNewPassword' });
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || 'Failed to send reset OTP. Please try again.');
     } finally {
