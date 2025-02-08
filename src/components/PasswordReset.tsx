@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, StyleSheet 
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import api from '../../services/api'
+import api from '../services/api';
 
 const PasswordReset: React.FC = () => {
   const route = useRoute();
