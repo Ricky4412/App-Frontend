@@ -147,6 +147,12 @@ const AdminDashboard: React.FC = () => {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Subscriptions</Text>
+        <TouchableOpacity
+          style={styles.manageButton}
+          onPress={() => navigation.navigate('SubscriptionForm')}
+        >
+          <Text style={styles.manageButtonText}>Add Subscription</Text>
+        </TouchableOpacity>
         <FlatList
           data={subscriptions}
           keyExtractor={(item) => item._id}
