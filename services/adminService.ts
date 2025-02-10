@@ -15,8 +15,9 @@ interface BookData {
   description: string;
   coverImage: string;
   rating: number;
-  htmlUrl: string;
-  price: number; 
+  htmlUrl: string; // Change from pdf to htmlUrl
+  price: number; // Add price field
+  // Add other book fields as necessary
 }
 
 interface SubscriptionData {
@@ -103,7 +104,6 @@ export const createBook = async (bookData: BookData): Promise<BookData> => {
     throw new Error('Failed to create book. Please try again later.');
   }
 };
-
 
 // Update a book by ID
 export const updateBook = async (bookId: string, bookData: BookData): Promise<BookData> => {
