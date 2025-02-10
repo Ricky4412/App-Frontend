@@ -1,8 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Define the API base URL for your deployed backend
-const API_BASE_URL = 'https://n-app.onrender.com';
+// Define the API base URL for your deployed proxy server
+const API_BASE_URL = 'https://proxy-server-puce-alpha.vercel.app/proxy';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,6 +15,9 @@ api.interceptors.request.use(
       const token = await AsyncStorage.getItem('authToken');
       if (token && config.headers) {
         config.headers['Authorization'] = `Bearer ${token}`;
+        config.params = config.params || {};
+        config.params['url'] = `${process.env.REACT_APP_BACKEND_URL}${config.url}`;
+        config.url = '';
       }
     } catch (error) {
       console.error('Error retrieving token from AsyncStorage:', error);
