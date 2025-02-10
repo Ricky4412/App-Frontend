@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getUsers, deleteUser } from '../../services/adminService'
+import { getUsers, deleteUser } from '../../services/adminService';
 
 interface User {
   _id: string;
