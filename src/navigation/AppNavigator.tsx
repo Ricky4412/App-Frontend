@@ -169,9 +169,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
-        
-        {isAdmin && <Stack.Screen name="Admin" component={AdminNavigator} />}
-
+        <Stack.Screen name="Admin" component={AdminNavigator} />
         <Stack.Screen name="BookDetails" component={BookDetails} />
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
