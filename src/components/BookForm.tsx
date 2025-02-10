@@ -18,6 +18,7 @@ const BookForm: React.FC = () => {
   const [rating, setRating] = useState<string>('');
   const [htmlUrl, setHtmlUrl] = useState<string>('');
   const [coverImageUrl, setCoverImageUrl] = useState<string>('');
+  const [price, setPrice] = useState<string>(''); // New state for price
 
   useEffect(() => {
     if (existingBook) {
@@ -27,11 +28,12 @@ const BookForm: React.FC = () => {
       setRating(existingBook.rating?.toString() || '');
       setHtmlUrl(existingBook.htmlUrl);
       setCoverImageUrl(existingBook.coverImage);
+      setPrice(existingBook.price?.toString() || ''); // Set price if available
     }
   }, [existingBook]);
 
   const handleSubmit = async () => {
-    if (!title || !author || !description || !coverImageUrl || !rating || !htmlUrl) {
+    if (!title || !author || !description || !coverImageUrl || !rating || !htmlUrl || !price) {
       Alert.alert('Error', 'All fields are required');
       return;
     }
@@ -43,6 +45,7 @@ const BookForm: React.FC = () => {
       rating: parseFloat(rating),
       coverImage: coverImageUrl,
       htmlUrl,
+      price: parseFloat(price), // Add price to formData
     };
 
     console.log('Submitting book data:', formData);
@@ -101,6 +104,13 @@ const BookForm: React.FC = () => {
         placeholder="Cover Image URL"
         value={coverImageUrl}
         onChangeText={setCoverImageUrl}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Price"
+        value={price}
+        onChangeText={setPrice}
+        keyboardType="numeric" // New input for price
       />
       {coverImageUrl && <Image source={{ uri: coverImageUrl }} style={styles.coverImage} />}
       <CustomButton title="Submit" onPress={handleSubmit} />
