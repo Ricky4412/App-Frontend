@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { getAnalyticsData } from '../../services/analyticsService'
+import { getAnalyticsData } from '../../services/analyticsService';
 
 interface AnalyticsData {
   totalUsers: number;
