@@ -15,8 +15,8 @@ interface BookData {
   description: string;
   coverImage: string;
   rating: number;
-  htmlUrl: string; // Change from pdf to htmlUrl
-  // Add other book fields as necessary
+  htmlUrl: string;
+  price: number; 
 }
 
 interface SubscriptionData {
