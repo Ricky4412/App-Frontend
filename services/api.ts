@@ -2,9 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define the API base URL for your deployed proxy server
-const API_BASE_URL = 'https://proxy-server-puce-alpha.vercel.app/proxy';
-REACT_APP_BACKEND_URL='https://n-app.onrender.com';
-
+const API_BASE_URL = 'https://n-app.onrender.com';
+REACT_APP_PROXY_SERVER_URL='https://proxy-server-puce-alpha.vercel.app'
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
