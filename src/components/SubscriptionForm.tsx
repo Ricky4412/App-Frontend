@@ -1,38 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { createSubscription, updateSubscription } from '../../services/adminService'
+import { createSubscription } from '../../services/subscriptionService';
 
-type SubscriptionFormRouteProp = RouteProp<{ params: { subscriptionId: string; existingSubscription: any } }, 'params'>;
+type SubscriptionFormRouteProp = RouteProp<{ params: { bookId: string } }, 'params'>;
 
 const SubscriptionForm: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<SubscriptionFormRouteProp>();
+  const { bookId } = route.params;
 
-  const { subscriptionId, existingSubscription } = route.params || {};
-
-  const [user, setUser] = useState<string>('');
   const [plan, setPlan] = useState<string>('');
-
-  useEffect(() => {
-    if (existingSubscription) {
-      setUser(existingSubscription.user);
-      setPlan(existingSubscription.plan);
-    }
-  }, [existingSubscription]);
+  const [price, setPrice] = useState<string>('');
+  const [duration, setDuration] = useState<string>('');
 
   const handleSubmit = async () => {
-    const subscriptionData = { user, plan };
+    const subscriptionData = { bookId, plan, price: parseFloat(price), duration: parseInt(duration, 10) };
 
     try {
-      if (subscriptionId) {
-        await updateSubscription(subscriptionId, subscriptionData);
-        alert('Subscription updated successfully');
-      } else {
-        await createSubscription(subscriptionData);
-        alert('Subscription created successfully');
-      }
-      navigation.goBack();
+      await createSubscription(subscriptionData);
+      navigation.navigate('PaymentScreen', { bookId, price: parseFloat(price) });
     } catch (error: any) {
       alert(error.message);
     }
@@ -40,18 +27,26 @@ const SubscriptionForm: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>{subscriptionId ? 'Edit Subscription' : 'Add Subscription'}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="User"
-        value={user}
-        onChangeText={setUser}
-      />
+      <Text style={styles.heading}>Choose a Subscription Plan</Text>
       <TextInput
         style={styles.input}
         placeholder="Plan"
         value={plan}
         onChangeText={setPlan}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Price"
+        value={price}
+        onChangeText={setPrice}
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Duration (days)"
+        value={duration}
+        onChangeText={setDuration}
+        keyboardType="numeric"
       />
       <Button title="Submit" onPress={handleSubmit} />
       <Button title="Cancel" onPress={() => navigation.goBack()} />

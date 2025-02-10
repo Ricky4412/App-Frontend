@@ -1,16 +1,30 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, RouteProp, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const PaymentSuccess: React.FC = () => {
-  const navigation = useNavigation();
+type RootStackParamList = {
+  PaymentSuccess: { bookId: string };
+  BookDetails: { bookId: string };
+};
+
+type PaymentSuccessRouteProp = RouteProp<RootStackParamList, 'PaymentSuccess'>;
+type PaymentSuccessNavigationProp = StackNavigationProp<RootStackParamList, 'PaymentSuccess'>;
+
+interface Props {
+  route: PaymentSuccessRouteProp;
+  navigation: PaymentSuccessNavigationProp;
+}
+
+const PaymentSuccess: React.FC<Props> = ({ route, navigation }) => {
+  const { bookId } = route.params;
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Payment Successful!</Text>
       <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
+        title="Continue"
+        onPress={() => navigation.navigate('BookDetails', { bookId })}
       />
     </View>
   );

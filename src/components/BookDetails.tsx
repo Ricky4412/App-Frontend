@@ -5,6 +5,7 @@ import CustomButton from './CustomButton';
 import Rating from './Rating';
 import ReviewCard from './ReviewCard';
 import { getReviews, getBooks, addReview } from '../../services/bookService';
+import { getUserSubscription } from '../../services/subscriptionService';
 
 type BookDetailsRouteProp = RouteProp<{ params: { book: any } }, 'params'>;
 
@@ -18,6 +19,8 @@ const BookDetails: React.FC = () => {
   const [newReview, setNewReview] = useState<string>('');
   const [newRating, setNewRating] = useState<number>(0);
   const [showReviewForm, setShowReviewForm] = useState<boolean>(false);
+  const [hasSubscription, setHasSubscription] = useState<boolean>(false);
+  const [remainingDays, setRemainingDays] = useState<number>(0);
 
   useEffect(() => {
     const fetchReviewsAndBooks = async () => {
@@ -36,14 +39,38 @@ const BookDetails: React.FC = () => {
       }
     };
 
+    const fetchSubscription = async () => {
+      try {
+        const subscription = await getUserSubscription(book._id);
+        if (subscription) {
+          setHasSubscription(true);
+          const now = new Date();
+          const endDate = new Date(subscription.endDate);
+          const diffTime = Math.abs(endDate - now);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          setRemainingDays(diffDays);
+        }
+      } catch (error) {
+        console.error('Error fetching subscription', error);
+      }
+    };
+
     fetchReviewsAndBooks();
+    fetchSubscription();
   }, [book._id]);
 
   const handleReadingButtonPress = () => {
+    if (!hasSubscription) {
+      Alert.alert('Subscription Required', 'You need to subscribe to this book to read.');
+      navigation.navigate('SubscriptionForm', { bookId: book._id });
+      return;
+    }
+
     if (!book.htmlUrl) {
       Alert.alert('Error', 'This book does not have valid content.');
       return;
     }
+
     navigation.navigate('ReadingScreen', { contentUrl: book.htmlUrl });
   };
 
@@ -68,28 +95,20 @@ const BookDetails: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Title */}
       <Text style={styles.title}>{book.title}</Text>
-
-      {/* Author */}
       <Text style={styles.author}>By: <Text style={styles.authorName}>{book.author}</Text></Text>
-
-      {/* Book Cover */}
       <Image source={{ uri: book.coverImage }} style={styles.coverImage} />
-
-      {/* Book Description */}
       <Text style={styles.description}>{book.description}</Text>
-
-      {/* Rating Feature */}
       <Rating bookId={book._id} />
-
-      {/* Reading Button */}
+      {hasSubscription && (
+        <Text style={styles.subscriptionAlert}>
+          {remainingDays} days left in your subscription.
+        </Text>
+      )}
       <CustomButton
         title="Start Reading"
         onPress={handleReadingButtonPress}
       />
-
-      {/* Reviews Section */}
       <View style={styles.reviewsSection}>
         <View style={styles.reviewHeader}>
           <Text style={styles.sectionTitle}>Reviews</Text>
@@ -123,8 +142,6 @@ const BookDetails: React.FC = () => {
           <ReviewCard key={review._id} review={review} />
         ))}
       </View>
-
-      {/* Recommended Books Section */}
       <Text style={styles.sectionTitle}>Recommended Books</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {allBooks.map((recommendedBook) => (
@@ -216,6 +233,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
+  },
+  subscriptionAlert: {
+    color: 'red',
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 
