@@ -37,7 +37,7 @@ type RootStackParamList = {
   ReviewCard: { bookId: string };
   PasswordReset: undefined;
   SetNewPassword: { userId: string };
-  SubscriptionForm: { bookId: string };  // Add SubscriptionForm to the stack
+  SubscriptionForm: { bookId: string };  
 };
 
 type TabParamList = {
@@ -163,7 +163,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 
 // Main Stack Navigator
 const AppNavigator: React.FC = () => {
-  const isAdmin: boolean = false; // Placeholder; should be dynamically determined from authentication context
+  const isAdmin: boolean = false; 
 
   return (
     <NavigationContainer linking={linking}>
