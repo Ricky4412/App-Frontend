@@ -51,7 +51,11 @@ const BookDetails: React.FC = () => {
           setRemainingDays(diffDays);
         }
       } catch (error) {
-        console.error('Error fetching subscription', error);
+        if (error.response && error.response.status === 404) {
+          setHasSubscription(false);
+        } else {
+          console.error('Error fetching subscription', error);
+        }
       }
     };
 
