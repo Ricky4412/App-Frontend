@@ -23,7 +23,7 @@ import ReadingScreen from '../components/ReadingScreen';
 import ReviewCard from '../components/ReviewCard';
 import PasswordReset from '../components/PasswordReset';
 import SetNewPassword from '../components/SetNewPassword';
-import SubscriptionForm from '../components/SubscriptionForm';  // Make sure to import SubscriptionForm
+import SubscriptionForm from '../components/SubscriptionForm';
 
 // Define types for stack and tab navigators
 type RootStackParamList = {
@@ -37,7 +37,7 @@ type RootStackParamList = {
   ReviewCard: { bookId: string };
   PasswordReset: undefined;
   SetNewPassword: { userId: string };
-  SubscriptionForm: { bookId: string };  
+  SubscriptionForm: { bookId: string };
 };
 
 type TabParamList = {
@@ -137,7 +137,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       ReviewCard: "review/:bookId",
       PasswordReset: "reset-password",
       SetNewPassword: "set-new-password/:userId",
-      SubscriptionForm: "subscription/:bookId"  // Add SubscriptionForm to linking config
+      SubscriptionForm: "subscription/:bookId"
     },
   },
   async getInitialURL() {
@@ -163,7 +163,7 @@ const linking: LinkingOptions<RootStackParamList> = {
 
 // Main Stack Navigator
 const AppNavigator: React.FC = () => {
-  const isAdmin: boolean = false; 
+  const isAdmin: boolean = false; // Placeholder; should be dynamically determined from authentication context
 
   return (
     <NavigationContainer linking={linking}>
@@ -172,13 +172,15 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="OTPVerificationScreen" component={OTPVerificationScreen} />
         <Stack.Screen name="Main" component={MainTabNavigator} />
-        <Stack.Screen name="Admin" component={AdminNavigator} />
+        
+        {isAdmin && <Stack.Screen name="Admin" component={AdminNavigator} />}
+
         <Stack.Screen name="BookDetails" component={BookDetails} />
         <Stack.Screen name="ReadingScreen" component={ReadingScreen} />
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
         <Stack.Screen name="PasswordReset" component={PasswordReset} />
         <Stack.Screen name="SetNewPassword" component={SetNewPassword} />
-        <Stack.Screen name="SubscriptionForm" component={SubscriptionForm} />  {/* Add SubscriptionForm to the stack */}
+        <Stack.Screen name="SubscriptionForm" component={SubscriptionForm} />
       </Stack.Navigator>
     </NavigationContainer>
   );
