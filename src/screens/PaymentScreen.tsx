@@ -5,8 +5,8 @@ import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type RootStackParamList = {
-  PaymentScreen: { plan: { name: string; price: number } };
-  OTPVerificationScreen: { email: string; phoneNumber: string };
+  PaymentScreen: { bookId: string, price: number };
+  PaymentSuccess: { bookId: string };
 };
 
 type PaymentScreenRouteProp = RouteProp<RootStackParamList, 'PaymentScreen'>;
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { plan } = route.params;
+  const { bookId, price } = route.params;
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
 
@@ -26,13 +26,12 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
     try {
       const response = await axios.post('https://n-app.onrender.com/api/subscriptions/pay', {
         email,
-        amount: plan.price,
-        currency: 'GHS',
+        amount: price,
         phone_number: phoneNumber,
       });
       const { data } = response;
-      if (data.ResponseCode === '0000') {
-        navigation.navigate('OTPVerificationScreen', { email, phoneNumber });
+      if (data.success) {
+        navigation.navigate('PaymentSuccess', { bookId });
       } else {
         Alert.alert('Payment failed', 'Please try again');
       }
@@ -44,7 +43,7 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Payment for {plan.name}</Text>
+      <Text style={styles.title}>Payment for Subscription</Text>
       <Text>Email:</Text>
       <TextInput
         value={email}
