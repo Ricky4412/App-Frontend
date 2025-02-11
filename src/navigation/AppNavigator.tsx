@@ -178,7 +178,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
         <Stack.Screen name="PasswordReset" component={PasswordReset} />
         <Stack.Screen name="SetNewPassword" component={SetNewPassword} />
-        <Stack.Screen name="SubscriptionForm" component={SubscriptionForm} />  // Add SubscriptionForm to the stack
+        <Stack.Screen name="SubscriptionForm" component={SubscriptionForm} />  {/* Add SubscriptionForm to the stack */}
       </Stack.Navigator>
     </NavigationContainer>
   );
