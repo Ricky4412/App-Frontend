@@ -23,6 +23,7 @@ import ReadingScreen from '../components/ReadingScreen';
 import ReviewCard from '../components/ReviewCard';
 import PasswordReset from '../components/PasswordReset';
 import SetNewPassword from '../components/SetNewPassword';
+import SubscriptionForm from '../components/SubscriptionForm';  // Make sure to import SubscriptionForm
 
 // Define types for stack and tab navigators
 type RootStackParamList = {
@@ -36,6 +37,7 @@ type RootStackParamList = {
   ReviewCard: { bookId: string };
   PasswordReset: undefined;
   SetNewPassword: { userId: string };
+  SubscriptionForm: { bookId: string };  // Add SubscriptionForm to the stack
 };
 
 type TabParamList = {
@@ -134,7 +136,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       ReadingScreen: "reading/:contentUrl",
       ReviewCard: "review/:bookId",
       PasswordReset: "reset-password",
-      SetNewPassword: "set-new-password/:userId"
+      SetNewPassword: "set-new-password/:userId",
+      SubscriptionForm: "subscription/:bookId"  // Add SubscriptionForm to linking config
     },
   },
   async getInitialURL() {
@@ -175,6 +178,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="ReviewCard" component={ReviewCard} />
         <Stack.Screen name="PasswordReset" component={PasswordReset} />
         <Stack.Screen name="SetNewPassword" component={SetNewPassword} />
+        <Stack.Screen name="SubscriptionForm" component={SubscriptionForm} />  // Add SubscriptionForm to the stack
       </Stack.Navigator>
     </NavigationContainer>
   );
