@@ -99,7 +99,6 @@ export const addReview = async (bookId: string, rating: number, comment: string)
   }
 };
 
-
 // Function to get reviews for a specific book
 export const getReviews = async (bookId: string): Promise<any[]> => {
   try {
@@ -110,4 +109,3 @@ export const getReviews = async (bookId: string): Promise<any[]> => {
     throw new Error('Failed to fetch reviews. Please try again later.');
   }
 };
-
