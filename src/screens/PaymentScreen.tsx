@@ -24,7 +24,7 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handlePayment = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/pay', {
+      const response = await axios.post('https://n-app.onrender.com/api/subscriptions/pay', {
         email,
         amount: plan.price,
         currency: 'GHS',
