@@ -6,9 +6,7 @@ import SubscriptionCard from '../components/SubscriptionCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 const subscriptionPlans = [
-  { id: '1', name: '15 Days Plan', price: 5, duration: 15 },
-  { id: '2', name: '30 Days Plan', price: 10, duration: 30 },
-  // Add more plans if needed
+
 ];
 
 const SubscriptionScreen: React.FC = () => {
