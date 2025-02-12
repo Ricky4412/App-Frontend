@@ -17,3 +17,12 @@ export const getUserSubscription = async (bookId: string): Promise<any> => {
     throw error;
   }
 };
+
+export const initializePayment = async (paymentData: { email: string; amount: number }): Promise<any> => {
+  try {
+    const response = await api.post('/subscriptions/pay', paymentData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
