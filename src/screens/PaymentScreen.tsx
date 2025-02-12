@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import axios from 'axios';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { initializePayment } from '../../services/subscriptionService';
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string, price: number };
@@ -24,16 +24,12 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handlePayment = async () => {
     try {
-      const response = await axios.post('https://n-app.onrender.com/api/subscriptions/pay', {
-        email,
-        amount: price,
-        phone_number: phoneNumber,
-      });
-      const { data } = response;
-      if (data.success) {
-        navigation.navigate('PaymentSuccess', { bookId });
+      const response = await initializePayment({ email, amount: price });
+      if (response.status === true && response.data.authorization_url) {
+        // Redirect to Paystack payment page
+        window.location.href = response.data.authorization_url;
       } else {
-        Alert.alert('Payment failed', 'Please try again');
+        Alert.alert('Payment initialization failed', 'Please try again');
       }
     } catch (error) {
       console.error(error);
