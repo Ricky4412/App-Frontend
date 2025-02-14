@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 interface Book {
+  _id: string;
   coverImage: string;
   rating?: number;
   title: string;
@@ -11,12 +12,12 @@ interface Book {
 
 interface BookCardProps {
   book: Book;
-  onPress: () => void;
+  onPress: (book: Book) => void;
 }
 
 const BookCard: React.FC<BookCardProps> = ({ book, onPress }) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity style={styles.card} onPress={() => onPress(book)}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: book.coverImage }} style={styles.coverImage} resizeMode="contain" />
         <View style={styles.ratingContainer}>
@@ -49,7 +50,6 @@ const styles = StyleSheet.create({
   },
   coverImage: {
     width: '100%',
-    margin: 0,
     height: 180,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
