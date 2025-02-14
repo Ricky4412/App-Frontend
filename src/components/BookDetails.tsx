@@ -14,6 +14,12 @@ const BookDetails: React.FC = () => {
   const route = useRoute<BookDetailsRouteProp>();
   const { book } = route.params;
 
+  if (!book || !book._id) {
+    Alert.alert('Error', 'Invalid book data. Please try again.');
+    navigation.goBack();
+    return null;
+  }
+
   const [reviews, setReviews] = useState<any[]>([]);
   const [allBooks, setAllBooks] = useState<any[]>([]);
   const [newReview, setNewReview] = useState<string>('');
