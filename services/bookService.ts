@@ -14,7 +14,7 @@ export const getBooks = async (params?: { search?: string; author?: string; rati
 // Function to update reading progress
 export const updateReadingProgress = async (bookId: string, progress: number): Promise<any> => {
   try {
-    const response = await api.put('/reading-progress', { bookId, progress });
+    const response = await api.put(`/api/reading-progress`, { bookId, progress });
     return response.data;
   } catch (error) {
     console.error(`Error updating reading progress for book ID ${bookId}:`, error);
@@ -25,7 +25,7 @@ export const updateReadingProgress = async (bookId: string, progress: number): P
 // Function to get reading progress for a specific book
 export const getReadingProgress = async (bookId: string): Promise<any> => {
   try {
-    const response = await api.get(`/reading-progress/${bookId}`);
+    const response = await api.get(`/api/reading-progress/${bookId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching reading progress for book ID ${bookId}:`, error);
@@ -36,7 +36,7 @@ export const getReadingProgress = async (bookId: string): Promise<any> => {
 // Function to search for books
 export const searchBooks = async (query: string): Promise<any[]> => {
   try {
-    const response = await api.get(`/books/search?query=${query}`);
+    const response = await api.get(`/api/books/search`, { params: { query } });
     return response.data;
   } catch (error) {
     console.error(`Error searching books with query "${query}":`, error);
@@ -47,7 +47,7 @@ export const searchBooks = async (query: string): Promise<any[]> => {
 // Function to get book recommendations
 export const getRecommendations = async (): Promise<any[]> => {
   try {
-    const response = await api.get('/books/recommendations');
+    const response = await api.get('/api/books/recommendations');
     return response.data;
   } catch (error) {
     console.error('Error fetching book recommendations:', error);
@@ -58,7 +58,7 @@ export const getRecommendations = async (): Promise<any[]> => {
 // Function to get book details
 export const getBookDetails = async (bookId: string): Promise<any> => {
   try {
-    const response = await api.get(`/books/${bookId}`);
+    const response = await api.get(`/api/books/${bookId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching book details for book ID ${bookId}:`, error);
@@ -69,7 +69,7 @@ export const getBookDetails = async (bookId: string): Promise<any> => {
 // Function to get similar books
 export const getSimilarBooks = async (bookId: string): Promise<any[]> => {
   try {
-    const response = await api.get(`/books/${bookId}/similar`);
+    const response = await api.get(`/api/books/${bookId}/similar`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching similar books for book ID ${bookId}:`, error);
@@ -80,7 +80,7 @@ export const getSimilarBooks = async (bookId: string): Promise<any[]> => {
 // Function to submit a rating for a book
 export const submitRating = async (bookId: string, rating: number): Promise<any> => {
   try {
-    const response = await api.post(`/books/${bookId}/rating`, { rating });
+    const response = await api.post(`/api/books/${bookId}/rating`, { rating });
     return response.data;
   } catch (error) {
     console.error(`Error submitting rating for book ID ${bookId}:`, error);
@@ -91,7 +91,7 @@ export const submitRating = async (bookId: string, rating: number): Promise<any>
 // Function to add a review for a book
 export const addReview = async (bookId: string, rating: number, comment: string): Promise<any> => {
   try {
-    const response = await api.post('/reviews', { bookId, rating, comment });
+    const response = await api.post('/api/reviews', { bookId, rating, comment });
     return response.data;
   } catch (error) {
     console.error(`Error adding review for book ID ${bookId}:`, error);
