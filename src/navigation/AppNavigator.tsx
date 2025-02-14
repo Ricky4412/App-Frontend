@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -25,6 +25,9 @@ import PasswordReset from '../components/PasswordReset';
 import SetNewPassword from '../components/SetNewPassword';
 import SubscriptionForm from '../components/SubscriptionForm';
 
+// Import context
+import { AuthContext } from '../context/AuthContext';
+
 // Define types for stack and tab navigators
 type RootStackParamList = {
   Login: undefined;
@@ -32,12 +35,12 @@ type RootStackParamList = {
   OTPVerificationScreen: { userId: string; role: string; nextScreen?: string };
   Admin: undefined;
   Main: undefined;
-  BookDetails: { book: { id: string; title: string; author: string; description: string; coverUrl: string } };
+  BookDetails: { book: any };
   ReadingScreen: { contentUrl: string };
   ReviewCard: { bookId: string };
   PasswordReset: undefined;
   SetNewPassword: { userId: string };
-  SubscriptionForm: { bookId: string };
+  SubscriptionForm: { book: any };
 };
 
 type TabParamList = {
@@ -137,7 +140,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       ReviewCard: "review/:bookId",
       PasswordReset: "reset-password",
       SetNewPassword: "set-new-password/:userId",
-      SubscriptionForm: "subscription/:bookId"
+      SubscriptionForm: "subscription/:book"
     },
   },
   async getInitialURL() {
@@ -163,7 +166,8 @@ const linking: LinkingOptions<RootStackParamList> = {
 
 // Main Stack Navigator
 const AppNavigator: React.FC = () => {
-  const isAdmin: boolean = false; // Placeholder; should be dynamically determined from authentication context
+  const { user } = useContext(AuthContext);
+  const isAdmin: boolean = user?.role === 'admin';
 
   return (
     <NavigationContainer linking={linking}>
