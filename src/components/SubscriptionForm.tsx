@@ -10,16 +10,28 @@ const SubscriptionForm: React.FC = () => {
   const route = useRoute<SubscriptionFormRouteProp>();
   const { bookId } = route.params;
 
-  const [plan, setPlan] = useState<string>('');
-  const [price, setPrice] = useState<string>('');
-  const [duration, setDuration] = useState<string>('');
+  const [plan, setPlan] = useState<string>('15 Days'); // Default to 15 Days
+  const [price, setPrice] = useState<number>(0); // Price will be set based on plan
+  const [duration, setDuration] = useState<number>(15); // Default to 15 days
+
+  const handlePlanChange = (selectedPlan: string) => {
+    if (selectedPlan === '15 Days') {
+      setPlan('15 Days');
+      setPrice(10); // Example price for 15 days
+      setDuration(15);
+    } else if (selectedPlan === '30 Days') {
+      setPlan('30 Days');
+      setPrice(20); // Example price for 30 days (2x the 15 days price)
+      setDuration(30);
+    }
+  };
 
   const handleSubmit = async () => {
-    const subscriptionData = { bookId, plan, price: parseFloat(price), duration: parseInt(duration, 10) };
+    const subscriptionData = { bookId, plan, price, duration };
 
     try {
       await createSubscription(subscriptionData);
-      navigation.navigate('PaymentScreen', { bookId, price: parseFloat(price) });
+      navigation.navigate('PaymentScreen', { bookId, price });
     } catch (error: any) {
       alert(error.message);
     }
@@ -28,26 +40,10 @@ const SubscriptionForm: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Choose a Subscription Plan</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Plan"
-        value={plan}
-        onChangeText={setPlan}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Price"
-        value={price}
-        onChangeText={setPrice}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Duration (days)"
-        value={duration}
-        onChangeText={setDuration}
-        keyboardType="numeric"
-      />
+      <Button title="15 Days - $10" onPress={() => handlePlanChange('15 Days')} />
+      <Button title="30 Days - $20" onPress={() => handlePlanChange('30 Days')} />
+      <Text>Selected Plan: {plan}</Text>
+      <Text>Price: ${price}</Text>
       <Button title="Submit" onPress={handleSubmit} />
       <Button title="Cancel" onPress={() => navigation.goBack()} />
     </View>
@@ -63,13 +59,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
   },
 });
 
