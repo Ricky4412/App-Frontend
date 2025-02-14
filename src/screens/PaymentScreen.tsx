@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { initializePayment } from '../../services/subscriptionService';
 
 type RootStackParamList = {
-  PaymentScreen: { bookId: string, price: number };
+  PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
   PaymentSuccess: { bookId: string };
 };
 
@@ -18,13 +18,13 @@ interface Props {
 }
 
 const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { bookId, price } = route.params;
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const { bookId, price, mobileNumber, serviceProvider, accountName } = route.params;
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handlePayment = async () => {
+    setLoading(true);
     try {
-      const response = await initializePayment({ email, amount: price });
+      const response = await initializePayment({ email: '', amount: price, mobileNumber, serviceProvider, accountName });
       if (response.status === true && response.data.authorization_url) {
         // Redirect to Paystack payment page
         window.location.href = response.data.authorization_url;
@@ -34,27 +34,19 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
     } catch (error) {
       console.error(error);
       Alert.alert('Payment error', 'An error occurred during payment');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Payment for Subscription</Text>
-      <Text>Email:</Text>
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Enter your email"
-        style={styles.input}
-      />
-      <Text>Phone Number:</Text>
-      <TextInput
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        placeholder="Enter phone number"
-        style={styles.input}
-      />
-      <Button title="Pay Now" onPress={handlePayment} />
+      <Text>Mobile Money Number: {mobileNumber}</Text>
+      <Text>Service Provider: {serviceProvider}</Text>
+      <Text>Account Name: {accountName}</Text>
+      <Text>Amount to Pay: GHS {price}</Text>
+      <Button title="Pay Now" onPress={handlePayment} disabled={loading} />
     </View>
   );
 };
@@ -69,13 +61,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     textAlign: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
   },
 });
 
