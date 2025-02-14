@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { createSubscription } from '../../services/subscriptionService';
 
