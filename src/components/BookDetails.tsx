@@ -4,16 +4,17 @@ import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import CustomButton from './CustomButton';
 import Rating from './Rating';
 import ReviewCard from './ReviewCard';
-import { getReviews, getBooks, addReview } from '../../services/bookService';
+import { getReviews, getBookDetails, addReview } from '../../services/bookService';
 import { getUserSubscription } from '../../services/subscriptionService';
 
-type BookDetailsRouteProp = RouteProp<{ params: { book: any } }, 'params'>;
+type BookDetailsRouteProp = RouteProp<{ params: { bookId: string } }, 'params'>;
 
 const BookDetails: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<BookDetailsRouteProp>();
-  const { book } = route.params;
+  const { bookId } = route.params;
 
+  const [book, setBook] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [allBooks, setAllBooks] = useState<any[]>([]);
   const [newReview, setNewReview] = useState<string>('');
@@ -23,12 +24,16 @@ const BookDetails: React.FC = () => {
   const [remainingDays, setRemainingDays] = useState<number>(0);
 
   useEffect(() => {
-    const fetchReviewsAndBooks = async () => {
+    const fetchBookDetailsAndReviews = async () => {
       try {
-        const reviewsData = await getReviews(book._id);
+        const bookData = await getBookDetails(bookId);
+        setBook(bookData);
+
+        const reviewsData = await getReviews(bookId);
         setReviews(reviewsData);
       } catch (error) {
-        console.error('Error fetching reviews', error);
+        console.error('Error fetching book details or reviews', error);
+        Alert.alert('Error', 'Failed to fetch book details or reviews. Please try again later.');
       }
 
       try {
@@ -41,7 +46,7 @@ const BookDetails: React.FC = () => {
 
     const fetchSubscription = async () => {
       try {
-        const subscription = await getUserSubscription(book._id);
+        const subscription = await getUserSubscription(bookId);
         if (subscription) {
           setHasSubscription(true);
           const now = new Date();
@@ -59,14 +64,14 @@ const BookDetails: React.FC = () => {
       }
     };
 
-    fetchReviewsAndBooks();
+    fetchBookDetailsAndReviews();
     fetchSubscription();
-  }, [book._id]);
+  }, [bookId]);
 
   const handleReadingButtonPress = () => {
     if (!hasSubscription) {
       Alert.alert('Subscription Required', 'You need to subscribe to this book to read.');
-      navigation.navigate('SubscriptionForm', { bookId: book._id });
+      navigation.navigate('SubscriptionForm', { bookId });
       return;
     }
 
@@ -85,17 +90,21 @@ const BookDetails: React.FC = () => {
     }
 
     try {
-      await addReview(book._id, newRating, newReview);
+      await addReview(bookId, newRating, newReview);
       Alert.alert('Success', 'Review submitted successfully');
       setNewReview('');
       setNewRating(0);
       setShowReviewForm(false);
-      const reviewsData = await getReviews(book._id);
+      const reviewsData = await getReviews(bookId);
       setReviews(reviewsData);
     } catch (error) {
       Alert.alert('Error', error.message);
     }
   };
+
+  if (!book) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -151,7 +160,7 @@ const BookDetails: React.FC = () => {
         {allBooks.map((recommendedBook) => (
           <TouchableOpacity
             key={recommendedBook._id}
-            onPress={() => navigation.navigate('BookDetails', { book: recommendedBook })}
+            onPress={() => navigation.navigate('BookDetails', { bookId: recommendedBook._id })}
             style={styles.bookContainer}
           >
             <Image source={{ uri: recommendedBook.coverImage }} style={styles.recommendedBookImage} />
