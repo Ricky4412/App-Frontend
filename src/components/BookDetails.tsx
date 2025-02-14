@@ -72,7 +72,7 @@ const BookDetails: React.FC = () => {
   const handleReadingButtonPress = () => {
     if (!hasSubscription) {
       Alert.alert('Subscription Required', 'You need to subscribe to this book to read.');
-      navigation.navigate('SubscriptionForm', { book });
+      navigation.navigate('SubscriptionForm', { bookId: book._id });
       return;
     }
 
