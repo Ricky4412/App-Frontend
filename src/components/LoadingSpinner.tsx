@@ -4,7 +4,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 const LoadingSpinner: React.FC = () => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="tomato" />
+      <ActivityIndicator size="large" color="#FF6347" />
     </View>
   );
 };
