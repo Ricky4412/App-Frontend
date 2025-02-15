@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { initializePayment } from '../../services/subscriptionService';
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
@@ -23,9 +24,13 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const paymentUrl = "https://paystack.com/pay/4vl38lntg8"; // Your Paystack Payment URL
-      // Redirect to Paystack payment page
-      window.location.href = paymentUrl;
+      const response = await initializePayment({ email: '', amount: price, mobileNumber, serviceProvider, accountName });
+      if (response.status && response.data.authorization_url) {
+        // Redirect to Paystack payment page
+        window.location.href = response.data.authorization_url;
+      } else {
+        Alert.alert('Payment initialization failed', 'Please try again');
+      }
     } catch (error) {
       console.error(error);
       Alert.alert('Payment error', 'An error occurred during payment');
