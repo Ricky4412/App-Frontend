@@ -38,6 +38,7 @@ type RootStackParamList = {
   PasswordReset: undefined;
   SetNewPassword: { userId: string };
   SubscriptionForm: { bookId: string };
+  PaymentScreen: { bookId: string; price: number; mobileNumber: string; serviceProvider: string; accountName: string };
 };
 
 type TabParamList = {
@@ -137,7 +138,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       ReviewCard: "review/:bookId",
       PasswordReset: "reset-password",
       SetNewPassword: "set-new-password/:userId",
-      SubscriptionForm: "subscription/:bookId"
+      SubscriptionForm: "subscription/:bookId",
+      PaymentScreen: "payment/:bookId/:price/:mobileNumber/:serviceProvider/:accountName"
     },
   },
   async getInitialURL() {
@@ -181,6 +183,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="PasswordReset" component={PasswordReset} />
         <Stack.Screen name="SetNewPassword" component={SetNewPassword} />
         <Stack.Screen name="SubscriptionForm" component={SubscriptionForm} />
+        <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
