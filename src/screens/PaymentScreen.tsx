@@ -24,10 +24,10 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const response = await initializePayment({ email: '', amount: price, mobileNumber, serviceProvider, accountName });
+      const response = await initializePayment({ email: 'user@example.com', amount: price, mobileNumber, serviceProvider, accountName });
       if (response.status && response.data.authorization_url) {
         // Redirect to Paystack payment page
-        window.location.href = response.data.authorization_url;
+        navigation.navigate('PaymentWebView', { url: response.data.authorization_url });
       } else {
         Alert.alert('Payment initialization failed', 'Please try again');
       }
