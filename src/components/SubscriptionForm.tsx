@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Picker } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -64,8 +63,8 @@ const SubscriptionForm: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Choose a Subscription Plan for {book.title}</Text>
-      <Button title={15 Days - GHS ${book.price}} onPress={() => handlePlanChange('15 Days')} />
-      <Button title={30 Days - GHS ${book.price * 2}} onPress={() => handlePlanChange('30 Days')} />
+      <Button title={`15 Days - GHS ${book.price}`} onPress={() => handlePlanChange('15 Days')} />
+      <Button title={`30 Days - GHS ${book.price * 2}`} onPress={() => handlePlanChange('30 Days')} />
       <Text>Selected Plan: {plan}</Text>
       <Text>Price: GHS {price}</Text>
       <TextInput
