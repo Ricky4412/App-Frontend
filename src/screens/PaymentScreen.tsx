@@ -7,6 +7,7 @@ import { initializePayment } from '../../services/subscriptionService';
 type RootStackParamList = {
   PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
   PaymentSuccess: { bookId: string };
+  PaymentWebView: { url: string };
 };
 
 type PaymentScreenRouteProp = RouteProp<RootStackParamList, 'PaymentScreen'>;
