@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,7 +14,7 @@ api.interceptors.request.use(
     try {
       const token = await AsyncStorage.getItem('authToken');
       if (token && config.headers) {
-        config.headers['Authorization'] = Bearer ${token};
+        config.headers['Authorization'] = `Bearer ${token}`;
       }
     } catch (error) {
       console.error('Error retrieving token from AsyncStorage:', error);
