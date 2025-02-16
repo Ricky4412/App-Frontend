@@ -45,6 +45,10 @@ api.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           console.error('Unauthorized access - possibly invalid token');
+          // Handle token expiration or invalid token
+          // Optionally, you can clear the token from AsyncStorage and redirect to login
+          AsyncStorage.removeItem('authToken');
+          // Redirect to login screen or handle authentication state
           break;
         case 404:
           console.error('Resource not found');
