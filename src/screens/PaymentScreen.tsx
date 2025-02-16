@@ -1,87 +1,69 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import axios from "axios";
-import { API_BASE_URL } from "./config";
-const PaymentScreen = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { bookId, userId, price, paymentMethod } = route.params;
+PaymentScreen.tsx component
 
-  const [loading, setLoading] = useState(false);
-  const [transactionId, setTransactionId] = useState(null);
+import React, { useState } from 'react';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { useNavigation, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { initializePayment } from '../../services/subscriptionService';
 
-  useEffect(() => {
-    if (transactionId) {
-      confirmPayment(transactionId);
-    }
-  }, [transactionId]);
+type RootStackParamList = {
+  PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
+  PaymentSuccess: { bookId: string };
+};
+
+type PaymentScreenRouteProp = RouteProp<RootStackParamList, 'PaymentScreen'>;
+type PaymentScreenNavigationProp = StackNavigationProp<RootStackParamList, 'PaymentScreen'>;
+
+interface Props {
+  route: PaymentScreenRouteProp;
+  navigation: PaymentScreenNavigationProp;
+}
+
+const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
+  const { bookId, price, mobileNumber, serviceProvider, accountName } = route.params;
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${API_BASE_URL}/payments/initiate`, {
-        userId,
-        bookId,
-        amount: price,
-        paymentMethod,
-      });
-      if (response.data.success) {
-        setTransactionId(response.data.transactionId);
-        Alert.alert("Payment Initiated", "Follow the instructions to complete the payment.");
+      const response = await initializePayment({ email: '', amount: price, mobileNumber, serviceProvider, accountName });
+      if (response.status && response.data.authorization_url) {
+        // Redirect to Paystack payment page
+        window.location.href = response.data.authorization_url;
       } else {
-        Alert.alert("Payment Failed", response.data.message);
+        Alert.alert('Payment initialization failed', 'Please try again');
       }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const confirmPayment = async (transactionId) => {
-    setLoading(true);
-    try {
-      const response = await axios.post(`${API_BASE_URL}/payments/confirm`, {
-        transactionId,
-      });
-      if (response.data.success) {
-        Alert.alert("Payment Successful", "Your subscription is now active.", [
-          { text: "OK", onPress: () => navigation.navigate("Library") },
-        ]);
-      } else {
-        Alert.alert("Payment Not Completed", "Please complete your payment and try again.");
-      }
-    } catch (error) {
-      Alert.alert("Error", "Unable to confirm payment. Please try again.");
+      console.error(error);
+      Alert.alert('Payment error', 'An error occurred during payment');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 20 }}>
-        Confirm Payment
-      </Text>
-      <Text style={{ fontSize: 16, marginBottom: 10 }}>Amount: ${price}</Text>
-      <Text style={{ fontSize: 16, marginBottom: 20 }}>Method: {paymentMethod}</Text>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#007bff",
-            padding: 10,
-            borderRadius: 5,
-          }}
-          onPress={handlePayment}
-        >
-          <Text style={{ color: "#fff", fontSize: 16 }}>Proceed with Payment</Text>
-        </TouchableOpacity>
-      )}
+    <View style={styles.container}>
+      <Text style={styles.title}>Payment for Subscription</Text>
+      <Text>Mobile Money Number: {mobileNumber}</Text>
+      <Text>Service Provider: {serviceProvider}</Text>
+      <Text>Account Name: {accountName}</Text>
+      <Text>Amount to Pay: GHS {price}</Text>
+      <Button title="Pay Now" onPress={handlePayment} disabled={loading} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+});
 
 export default PaymentScreen;
