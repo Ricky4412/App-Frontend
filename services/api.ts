@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -6,18 +7,15 @@ const API_BASE_URL = 'https://n-app.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
-// Request Interceptor: Adds Authorization Token to Headers
+// Request interceptor to add authorization token to headers
 api.interceptors.request.use(
   async (config) => {
     try {
       const token = await AsyncStorage.getItem('authToken');
       if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers['Authorization'] = Bearer ${token};
       }
     } catch (error) {
       console.error('Error retrieving token from AsyncStorage:', error);
@@ -30,10 +28,11 @@ api.interceptors.request.use(
   }
 );
 
-// Response Interceptor: Handles Errors & Logs Responses
+// Response interceptor for logging and error handling
 api.interceptors.response.use(
   (response) => {
-    console.log('API Response:', response);
+    // Log the response for debugging purposes
+    console.log('API response:', response);
     return response;
   },
   (error) => {
@@ -41,28 +40,26 @@ api.interceptors.response.use(
       console.error('API call error:', error);
       console.error('Response data:', error.response.data);
       console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
 
-      // Handle specific status codes
+      // Handle specific status codes if needed
       switch (error.response.status) {
         case 401:
-          console.error('Unauthorized access - invalid token or session expired');
-          break;
-        case 403:
-          console.error('Forbidden - insufficient permissions');
+          console.error('Unauthorized access - possibly invalid token');
           break;
         case 404:
           console.error('Resource not found');
           break;
         case 500:
-          console.error('Internal server error - try again later');
+          console.error('Internal server error');
           break;
         default:
-          console.error('Unexpected error occurred');
+          console.error('An unexpected error occurred');
       }
     } else if (error.request) {
-      console.error('No response received from server:', error.request);
+      console.error('No response received:', error.request);
     } else {
-      console.error('Request setup error:', error.message);
+      console.error('Error setting up request:', error.message);
     }
     return Promise.reject(error);
   }
