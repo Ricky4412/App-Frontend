@@ -11,7 +11,7 @@ export const createSubscription = async (subscriptionData: { bookId: string; pla
 
 export const getUserSubscription = async (subscriptionId: string): Promise<any> => {
   try {
-    const response = await api.get(/api/subscriptions/${subscriptionId});
+    const response = await api.get(`/api/subscriptions/${subscriptionId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -26,4 +26,3 @@ export const initializePayment = async (paymentData: { email: string; amount: nu
     throw error;
   }
 };
-
