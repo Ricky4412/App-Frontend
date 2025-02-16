@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
-
+import { API_BASE_URL } from "./config";
 const PaymentScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
