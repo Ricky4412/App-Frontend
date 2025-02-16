@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { 
+  View, Text, StyleSheet, Alert, Image, ScrollView, TouchableOpacity, 
+  TextInput, ActivityIndicator 
+} from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import CustomButton from './CustomButton';
 import Rating from './Rating';
@@ -27,46 +30,39 @@ const BookDetails: React.FC = () => {
   const [showReviewForm, setShowReviewForm] = useState<boolean>(false);
   const [hasSubscription, setHasSubscription] = useState<boolean>(false);
   const [remainingDays, setRemainingDays] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchReviewsAndBooks = async () => {
+    const fetchData = async () => {
       try {
-        const reviewsData = await getReviews(book._id);
+        const [reviewsData, booksData, subscription] = await Promise.all([
+          getReviews(book._id),
+          getBooks(),
+          getUserSubscription(book._id)
+        ]);
+
         setReviews(reviewsData);
-      } catch (error) {
-        console.error('Error fetching reviews', error);
-      }
-
-      try {
-        const booksData = await getBooks();
         setAllBooks(booksData);
-      } catch (error) {
-        console.error('Error fetching all books', error);
-      }
-    };
 
-    const fetchSubscription = async () => {
-      try {
-        const subscription = await getUserSubscription(book._id);
         if (subscription) {
-          setHasSubscription(true);
           const now = new Date();
           const endDate = new Date(subscription.endDate);
-          const diffTime = Math.abs(endDate - now);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          setRemainingDays(diffDays);
+          if (endDate > now) {
+            setHasSubscription(true);
+            setRemainingDays(Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+          } else {
+            setHasSubscription(false);
+          }
         }
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setHasSubscription(false);
-        } else {
-          console.error('Error fetching subscription', error);
-        }
+        console.error('Error fetching data:', error);
+        setHasSubscription(false);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchReviewsAndBooks();
-    fetchSubscription();
+    fetchData();
   }, [book._id]);
 
   const handleReadingButtonPress = () => {
@@ -96,12 +92,21 @@ const BookDetails: React.FC = () => {
       setNewReview('');
       setNewRating(0);
       setShowReviewForm(false);
+
       const reviewsData = await getReviews(book._id);
       setReviews(reviewsData);
     } catch (error) {
       Alert.alert('Error', error.message);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#007bff" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -110,25 +115,23 @@ const BookDetails: React.FC = () => {
       <Image source={{ uri: book.coverImage }} style={styles.coverImage} />
       <Text style={styles.description}>{book.description}</Text>
       <Rating bookId={book._id} />
+
       {hasSubscription && (
         <Text style={styles.subscriptionAlert}>
           {remainingDays} days left in your subscription.
         </Text>
       )}
-      <CustomButton
-        title="Start Reading"
-        onPress={handleReadingButtonPress}
-      />
+
+      <CustomButton title="Start Reading" onPress={handleReadingButtonPress} />
+
       <View style={styles.reviewsSection}>
         <View style={styles.reviewHeader}>
           <Text style={styles.sectionTitle}>Reviews</Text>
-          <TouchableOpacity
-            onPress={() => setShowReviewForm(!showReviewForm)}
-            style={styles.postReviewButton}
-          >
+          <TouchableOpacity onPress={() => setShowReviewForm(!showReviewForm)} style={styles.postReviewButton}>
             <Text style={styles.postReviewText}>Post Review</Text>
           </TouchableOpacity>
         </View>
+
         {showReviewForm && (
           <View style={styles.reviewForm}>
             <TextInput
@@ -148,10 +151,14 @@ const BookDetails: React.FC = () => {
             <CustomButton title="Submit Review" onPress={handleReviewSubmit} />
           </View>
         )}
-        {reviews.map((review) => (
-          <ReviewCard key={review._id} review={review} />
-        ))}
+
+        {reviews.length === 0 ? (
+          <Text style={styles.noReviewsText}>No reviews yet. Be the first to review!</Text>
+        ) : (
+          reviews.map((review) => <ReviewCard key={review._id} review={review} />)
+        )}
       </View>
+
       <Text style={styles.sectionTitle}>Recommended Books</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {allBooks.map((recommendedBook) => (
@@ -169,87 +176,22 @@ const BookDetails: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  author: {
-    fontSize: 15,
-    marginBottom: 10,
-    fontStyle: 'italic',
-    color: "#666666",
-    textAlign: 'center',
-  },
-  authorName: {
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  coverImage: {
-    width: '100%',
-    height: 450,
-    resizeMode: 'cover',
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 20,
-  },
-  reviewsSection: {
-    marginTop: 30,
-  },
-  reviewHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  postReviewButton: {
-    alignSelf: 'flex-end',
-  },
-  postReviewText: {
-    color: '#007bff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  bookContainer: {
-    marginRight: 10,
-  },
-  recommendedBookImage: {
-    width: 100,
-    height: 150,
-    resizeMode: 'cover',
-    borderRadius: 5,
-  },
-  reviewForm: {
-    marginBottom: 20,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-  subscriptionAlert: {
-    color: 'red',
-    fontSize: 16,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
+  container: { padding: 20, backgroundColor: '#f5f5f5' },
+  title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 },
+  author: { fontSize: 15, fontStyle: 'italic', color: "#666", textAlign: 'center' },
+  authorName: { fontWeight: 'bold', color: '#333' },
+  coverImage: { width: '100%', height: 450, resizeMode: 'cover', borderRadius: 10, marginBottom: 20 },
+  description: { fontSize: 16, lineHeight: 24, marginBottom: 20 },
+  reviewsSection: { marginTop: 30 },
+  reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+  postReviewButton: { alignSelf: 'flex-end' },
+  postReviewText: { color: '#007bff', fontWeight: 'bold', fontSize: 16 },
+  noReviewsText: { fontStyle: 'italic', textAlign: 'center', color: '#888' },
+  bookContainer: { marginRight: 10 },
+  recommendedBookImage: { width: 100, height: 150, resizeMode: 'cover', borderRadius: 5 },
+  subscriptionAlert: { color: 'red', fontSize: 16, marginBottom: 10, textAlign: 'center' },
+  loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });
 
 export default BookDetails;
