@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
