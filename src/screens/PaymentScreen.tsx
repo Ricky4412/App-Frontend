@@ -28,8 +28,8 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
     setLoading(true);
     try {
       const response = await initializePayment({ email: 'user@example.com', amount: price, mobileNumber, serviceProvider, accountName });
-      if (response.status && response.data.authorization_url) {
-        setPaymentUrl(response.data.authorization_url);
+      if (response.data.status && response.data.data.authorization_url) {
+        setPaymentUrl(response.data.data.authorization_url);
         setModalVisible(true);
       } else {
         Alert.alert('Payment initialization failed', 'Please try again');
