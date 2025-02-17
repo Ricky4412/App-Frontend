@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet, Alert, Modal, Platform } from 'react-na
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { WebView as RNWebView } from 'react-native-webview';
-import { initializePayment } from '../services/subscriptionService';
+import { initializePayment } from '../../services/subscriptionService';
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
