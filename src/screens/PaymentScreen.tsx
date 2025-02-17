@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { initializePayment } from '../services/subscriptionService';
+import { initializePayment } from '../../services/subscriptionService';
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
