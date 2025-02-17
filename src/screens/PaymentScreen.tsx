@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert, Modal } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { WebView } from 'react-native-webview';
 import { initializePayment } from '../../services/subscriptionService';
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
   PaymentSuccess: { bookId: string };
-  PaymentWebView: { url: string };
 };
 
 type PaymentScreenRouteProp = RouteProp<RootStackParamList, 'PaymentScreen'>;
@@ -21,14 +21,16 @@ interface Props {
 const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
   const { bookId, price, mobileNumber, serviceProvider, accountName } = route.params;
   const [loading, setLoading] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [paymentUrl, setPaymentUrl] = useState<string>('');
 
   const handlePayment = async () => {
     setLoading(true);
     try {
       const response = await initializePayment({ email: 'user@example.com', amount: price, mobileNumber, serviceProvider, accountName });
       if (response.status && response.data.authorization_url) {
-        // Redirect to Paystack payment page
-        navigation.navigate('PaymentWebView', { url: response.data.authorization_url });
+        setPaymentUrl(response.data.authorization_url);
+        setModalVisible(true);
       } else {
         Alert.alert('Payment initialization failed', 'Please try again');
       }
@@ -48,6 +50,14 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
       <Text>Account Name: {accountName}</Text>
       <Text>Amount to Pay: GHS {price}</Text>
       <Button title="Pay Now" onPress={handlePayment} disabled={loading} />
+      <Modal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        animationType="slide"
+      >
+        <WebView source={{ uri: paymentUrl }} />
+        <Button title="Close" onPress={() => setModalVisible(false)} />
+      </Modal>
     </View>
   );
 };
