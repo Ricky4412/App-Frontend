@@ -9,9 +9,9 @@ export const createSubscription = async (subscriptionData: { bookId: string; pla
   }
 };
 
-export const getUserSubscription = async (subscriptionId: string): Promise<any> => {
+export const getUserSubscriptionByBook = async (bookId: string): Promise<any> => {
   try {
-    const response = await api.get(`/api/subscriptions/${subscriptionId}`);
+    const response = await api.get(`/api/subscriptions/book/${bookId}`);
     return response.data;
   } catch (error) {
     throw error;
