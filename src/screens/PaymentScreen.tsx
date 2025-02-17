@@ -3,9 +3,10 @@ import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { initializePayment } from '../../services/subscriptionService';
+import * as Linking from 'expo-linking'; // ✅ Import Linking from Expo
 
 type RootStackParamList = {
-  PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
+  PaymentScreen: { bookId: string; price: number; mobileNumber: string; serviceProvider: string; accountName: string };
   PaymentSuccess: { bookId: string };
 };
 
@@ -24,10 +25,17 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const response = await initializePayment({ email: '', amount: price, mobileNumber, serviceProvider, accountName });
-      if (response.status && response.data.authorization_url) {
-        // Redirect to Paystack payment page
-        window.location.href = response.data.authorization_url;
+      const response = await initializePayment({ 
+        email: '', 
+        amount: price, 
+        mobileNumber, 
+        serviceProvider, 
+        accountName 
+      });
+
+      if (response.success && response.data.authorization_url) {
+        // ✅ Open Paystack authorization URL in browser
+        Linking.openURL(response.data.authorization_url);
       } else {
         Alert.alert('Payment initialization failed', 'Please try again');
       }
