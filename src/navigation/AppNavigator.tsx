@@ -13,7 +13,7 @@ import EditProfile from '../components/EditProfile';
 import ChangePassword from '../components/ChangePassword';
 import PaymentSuccess from '../components/PaymentSuccess';
 import PaymentScreen from '../screens/PaymentScreen';
-import PaymentWebView from '../screens/PaymentWebView'; // Import PaymentWebView
+import PaymentWebView from '../screens/PaymentWebView';
 import AdminNavigator from './AdminNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
