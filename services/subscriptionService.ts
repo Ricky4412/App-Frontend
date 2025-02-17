@@ -26,4 +26,3 @@ export const initializePayment = async (paymentData: { email: string; amount: nu
     throw error;
   }
 };
-
