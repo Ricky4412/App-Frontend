@@ -13,6 +13,7 @@ import EditProfile from '../components/EditProfile';
 import ChangePassword from '../components/ChangePassword';
 import PaymentSuccess from '../components/PaymentSuccess';
 import PaymentScreen from '../screens/PaymentScreen';
+import PaymentWebView from '../screens/PaymentWebView'; // Import PaymentWebView
 import AdminNavigator from './AdminNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -39,6 +40,7 @@ type RootStackParamList = {
   SetNewPassword: { userId: string };
   SubscriptionForm: { bookId: string };
   PaymentScreen: { bookId: string; price: number; mobileNumber: string; serviceProvider: string; accountName: string };
+  PaymentWebView: { url: string }; // Add PaymentWebView route type
 };
 
 type TabParamList = {
@@ -58,6 +60,7 @@ type SubscriptionStackParamList = {
   SubscriptionMain: undefined;
   PaymentScreen: undefined;
   PaymentSuccess: undefined;
+  PaymentWebView: undefined; // Add PaymentWebView route
 };
 
 // Create navigators
@@ -81,6 +84,7 @@ const SubscriptionNavigator: React.FC = () => (
     <SubscriptionStack.Screen name="SubscriptionMain" component={SubscriptionScreen} />
     <SubscriptionStack.Screen name="PaymentScreen" component={PaymentScreen} />
     <SubscriptionStack.Screen name="PaymentSuccess" component={PaymentSuccess} />
+    <SubscriptionStack.Screen name="PaymentWebView" component={PaymentWebView} /> {/* Add PaymentWebView */}
   </SubscriptionStack.Navigator>
 );
 
@@ -139,7 +143,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       PasswordReset: "reset-password",
       SetNewPassword: "set-new-password/:userId",
       SubscriptionForm: "subscription/:bookId",
-      PaymentScreen: "payment/:bookId/:price/:mobileNumber/:serviceProvider/:accountName"
+      PaymentScreen: "payment/:bookId/:price/:mobileNumber/:serviceProvider/:accountName",
+      PaymentWebView: "payment-webview/:url" // Add PaymentWebView deep link
     },
   },
   async getInitialURL() {
@@ -184,6 +189,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="SetNewPassword" component={SetNewPassword} />
         <Stack.Screen name="SubscriptionForm" component={SubscriptionForm} />
         <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+        <Stack.Screen name="PaymentWebView" component={PaymentWebView} /> {/* Add PaymentWebView */}
       </Stack.Navigator>
     </NavigationContainer>
   );
