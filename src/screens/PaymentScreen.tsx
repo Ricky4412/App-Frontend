@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert, Linking } from 'react-native'; // ✅ Use React Native Linking
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { initializePayment } from '../../services/subscriptionService';
-import { Linking } from 'react-native';  // ✅ Correct for both Mobile & Web
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string; price: number; mobileNumber: string; serviceProvider: string; accountName: string };
@@ -34,7 +33,7 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
       });
 
       if (response.success && response.data.authorization_url) {
-        // ✅ Open Paystack authorization URL in browser
+        // ✅ Open Paystack URL in browser
         Linking.openURL(response.data.authorization_url);
       } else {
         Alert.alert('Payment initialization failed', 'Please try again');
