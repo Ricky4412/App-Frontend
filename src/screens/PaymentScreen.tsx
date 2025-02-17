@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, Alert, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert, Modal, Platform } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { WebView } from 'react-native-webview';
-import { initializePayment } from '../../services/subscriptionService';
+import { WebView as RNWebView } from 'react-native-webview';
+import { initializePayment } from '../services/subscriptionService';
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string, price: number, mobileNumber: string, serviceProvider: string, accountName: string };
@@ -55,7 +55,15 @@ const PaymentScreen: React.FC<Props> = ({ route, navigation }) => {
         onRequestClose={() => setModalVisible(false)}
         animationType="slide"
       >
-        <WebView source={{ uri: paymentUrl }} />
+        {Platform.OS === 'web' ? (
+          <iframe
+            src={paymentUrl}
+            style={{ flex: 1, width: '100%', height: '100%' }}
+            frameBorder="0"
+          />
+        ) : (
+          <RNWebView source={{ uri: paymentUrl }} />
+        )}
         <Button title="Close" onPress={() => setModalVisible(false)} />
       </Modal>
     </View>
