@@ -5,7 +5,7 @@ import CustomButton from './CustomButton';
 import Rating from './Rating';
 import ReviewCard from './ReviewCard';
 import { getReviews, getBooks, addReview } from '../../services/bookService';
-import { getUserSubscription } from '../../services/subscriptionService';
+import { getUserSubscriptionByBook } from '../../services/subscriptionService';
 
 type BookDetailsRouteProp = RouteProp<{ params: { book: any } }, 'params'>;
 
@@ -47,7 +47,7 @@ const BookDetails: React.FC = () => {
 
     const fetchSubscription = async () => {
       try {
-        const subscription = await getUserSubscription(book._id);
+        const subscription = await getUserSubscriptionByBook(book._id);
         if (subscription) {
           setHasSubscription(true);
           const now = new Date();
