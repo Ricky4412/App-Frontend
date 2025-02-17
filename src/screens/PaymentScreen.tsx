@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { initializePayment } from '../../services/subscriptionService';
-import * as Linking from 'expo-linking'; // ✅ Import Linking from Expo
+import { Linking } from 'react-native';  // ✅ Correct for both Mobile & Web
 
 type RootStackParamList = {
   PaymentScreen: { bookId: string; price: number; mobileNumber: string; serviceProvider: string; accountName: string };
