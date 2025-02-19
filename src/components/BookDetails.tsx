@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
-import CustomButton from './CustomButton';
-import Rating from './Rating';
-import ReviewCard from './ReviewCard';
+import CustomButton from '../components/CustomButton';
+import Rating from '../components/Rating';
+import ReviewCard from '../components/ReviewCard';
 import { getReviews, getBooks, addReview } from '../../services/bookService';
 import { getUserSubscriptionByBook } from '../../services/subscriptionService';
 
